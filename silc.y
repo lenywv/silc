@@ -21,16 +21,18 @@ statement:
 	;
 	
 expr: 
-	INTEGER	{ $$=$1; }
+	INTEGER		{ $$ = $1; }
 	|
-	expr '+' expr { $$= $1 + $3;}
+	expr '+' expr	{ $$ = $1 + $3; }
 	|
-	expr '-' expr { $$= $1 - $3;}
+	expr '-' expr	{ $$ = $1 - $3; }
 	|
-	expr '*' expr { $$= $1 * $3;}
+	expr '*' expr	{ $$ = $1 * $3; }
 	|
-	expr '/' expr { $$= $1 / $3;}
+	expr '/' expr	{ $$ = $1 / $3; }
 	|
+	'(' expr ')' 	{ $$ = $2; }
+	|	
 	;
 %%
 

@@ -9,7 +9,7 @@
 		return INTEGER;
   	}
 
-[+\-*/\n]	return *yytext;
+[\(\)+\-*/\n]	return *yytext;
 
 [ \t]	;
 
