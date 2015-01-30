@@ -46,16 +46,42 @@ extern int yydebug;
   enum yytokentype
   {
     INTEGER = 258,
-    VARIABLE = 259
+    VARIABLE = 259,
+    IF = 260,
+    ELSE = 261,
+    PRINT = 262,
+    WHILE = 263,
+    GE = 264,
+    LE = 265,
+    EQ = 266,
+    NE = 267
   };
 #endif
 /* Tokens.  */
 #define INTEGER 258
 #define VARIABLE 259
+#define IF 260
+#define ELSE 261
+#define PRINT 262
+#define WHILE 263
+#define GE 264
+#define LE 265
+#define EQ 266
+#define NE 267
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE YYSTYPE;
+union YYSTYPE
+{
+#line 16 "silc.y" /* yacc.c:1909  */
+
+		int i;
+		char c;
+		struct treenode *nptr;
+
+#line 84 "y.tab.h" /* yacc.c:1909  */
+};
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

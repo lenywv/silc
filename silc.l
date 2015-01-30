@@ -6,13 +6,13 @@
 %%
 	/* integers */
 [0-9]+ {
-		yylval = atoi(yytext);
+		yylval.i = atoi(yytext);
 		return INTEGER;
   	}
 
 	/* variables */
 [a-z]	{
-		yylval = *yytext - 'a' ;
+		yylval.i = *yytext - 'a' ;
 		return VARIABLE;
 	}
 
