@@ -1,6 +1,7 @@
 %{
 #include <stdlib.h>
 #include "y.tab.h"
+#include "operators.h"
 %}
 
 %%
@@ -16,18 +17,41 @@
 		return VARIABLE;
 	}
 
+"read"	return READ;
+
 	/* operators */
-[-()<>=+*/\n]	{return *yytext;}
+[-()=+*/\n]	{return *yytext;}
 
 	/* whitespace */
 [ \t]	;
 
-">="	return GE;
-"<+"	return LE;
-"=="	return EQ;
-"!="	return NE;
+">="	{
+		yylval.i=CH_GE;
+		return RELOP;
+	}
+"<="	{
+		yylval.i=CH_LE;
+		return RELOP;
+	}
+"=="	{
+		yylval.i=CH_EQ;
+		return RELOP;
+	}
+"!="	{
+		yylval.i=CH_NE;
+		return RELOP;
+	}
+">"	{
+		yylval.i=CH_GT;
+		return RELOP;
+	}
+"<"	{
+		yylval.i=CH_LT;
+		return RELOP;
+	}
+
 "while"	return WHILE;
-"if"		return IF;
+"if"	return IF;
 "else"	return ELSE;
 "print"	return PRINT;
 

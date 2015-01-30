@@ -1,33 +1,34 @@
 %{
-#include<stdio.h>
+#include <stdio.h>
+#include "operators.h"
 int yytext(void);
 void yyerror(char *);
 int sym[26];
 typedef struct treenode
 {
-	char op;
+	int op;
 	struct treenode *left,*right;
 	int value;
 }node;
-node* make_node(char op,node *left,node *right,int value);
+node* make_node(int op,node *left,node *right,int value);
 %}
 
 %union
 {
 		int i;
-		char c;
+//		char c;
 		struct treenode *nptr;
 };
 
 %token <i> INTEGER
-%token <c> VARIABLE
-%token IF ELSE PRINT WHILE
+%token <i> VARIABLE
+%token IF ELSE PRINT WHILE READ
 
 %type <nptr> expr
-%left GE LE EQ NE '>' '<'
+%left RELOP
 %left '+' '-'
 %left '*' '/'
-/*%nonassoc UMINUS*/
+%nonassoc UMINUS
 %%
 
 program:
@@ -41,22 +42,25 @@ statement:
 	VARIABLE '=' expr {sym[$1] = evaluate($3);}
 	;
 	
+condition:
+	expr RELOP expr { $$ = make_node(CH_RELOP,$1,$3,$2);
+	;
 expr: 
-	INTEGER		{ $$ =make_node(' ',NULL,NULL,$1);}
+	INTEGER		{ $$ =make_node(CH_CONST,NULL,NULL,$1);}
 	|
-	VARIABLE	{ $$ = make_node(' ',NULL,NULL,sym[$1]);}
+	VARIABLE	{ $$ = make_node(CH_CONST,NULL,NULL,sym[$1]);}
 	|
-	expr '+' expr	{ $$ = make_node('+',$1, $3, 0); }
+	expr '+' expr	{ $$ = make_node(CH_ADD,$1, $3, 0); }
 	|
-	expr '-' expr	{ $$ = make_node('-',$1, $3, 0); }
+	expr '-' expr	{ $$ = make_node(CH_SUB,$1, $3, 0); }
 	|
-	expr '*' expr	{ $$ = make_node('*',$1, $3, 0); }
+	expr '*' expr	{ $$ = make_node(CH_MUL,$1, $3, 0); }
 	|
-	expr '/' expr	{ $$ = make_node('/',$1, $3, 0); }
+	expr '/' expr	{ $$ = make_node(CH_DIV,$1, $3, 0); }
 	|
 	'(' expr ')' 	{ $$ = $2; }
-/*	|
-	'-' expr %prec UMINUS { $$ = makenode(UMINUS, 1 , $2); }*/
+	|
+	'-' expr %prec UMINUS { $$ = make_node(CH_UMINUS, $2, NULL,0); }
 	;
 %%
 
@@ -71,7 +75,7 @@ int main(void)
 	return 0;
 }
 
-node* make_node(char op,node *left,node *right,int value)
+node* make_node(int op,node *left,node *right,int value)
 {
 	node *ptr=(node*)malloc(sizeof(node));
 	ptr->op=op;
@@ -83,20 +87,23 @@ node* make_node(char op,node *left,node *right,int value)
 
 int evaluate(node *ptr)
 {
-	char op=ptr->op;
+	int op=ptr->op;
 	
 	switch(op)
 	{
-		case ' ':
+		case CH_CONST:
 			return ptr->value;
-		case '+':
+		case CH_ADD:
 			return evaluate(ptr->left)+evaluate(ptr->right);
-		case '-':
+		case CH_SUB:
 			return evaluate(ptr->left)-evaluate(ptr->right);
-		case '*':
+		case CH_MUL:
 			return evaluate(ptr->left)*evaluate(ptr->right);
-		case '/':
+		case CH_DIV:
 			return evaluate(ptr->left)/evaluate(ptr->right);
-		
+		case CH_UMINUS:
+			return -evaluate(ptr->left);
+		default:
+			yyerror("Syntax error");		
 	}
 }
