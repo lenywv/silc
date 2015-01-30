@@ -2,12 +2,15 @@
 #include<stdio.h>
 int yytext(void);
 void yyerror(char *);
+int sym[26];
 %}
 
-%token INTEGER
+%token INTEGER VARIABLE
 
 %left '+' '-'
 %left '*' '/'
+
+%right '='
 
 %%
 
@@ -18,10 +21,14 @@ program:
 
 statement:
 	expr	{ printf("%d\n",$1); }
+	|
+	VARIABLE '=' expr {sym[$1] = $3;}
 	;
 	
 expr: 
 	INTEGER		{ $$ = $1; }
+	|
+	VARIABLE		{ $$ = sym[$1];}
 	|
 	expr '+' expr	{ $$ = $1 + $3; }
 	|
@@ -32,7 +39,6 @@ expr:
 	expr '/' expr	{ $$ = $1 / $3; }
 	|
 	'(' expr ')' 	{ $$ = $2; }
-	|	
 	;
 %%
 

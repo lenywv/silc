@@ -4,15 +4,25 @@
 %}
 
 %%
+	/* integers */
 [0-9]+ {
-		yylval =atoi(yytext);
+		yylval = atoi(yytext);
 		return INTEGER;
   	}
 
-[\(\)+\-*/\n]	return *yytext;
+	/* variables */
+[a-z]	{
+		yylval = *yytext - 'a' ;
+		return VARIABLE;
+	}
 
+	/* operators */
+[()=+\-*/\n]	{return *yytext;}
+
+	/* whitespace */
 [ \t]	;
 
+	/* others */
 .	yyerror("Invalid character");
 
 %%
