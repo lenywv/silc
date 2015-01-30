@@ -5,13 +5,21 @@ void yyerror(char *);
 int sym[26];
 %}
 
-%token INTEGER VARIABLE
+%union
+{
+		int i;
+		char c;
+		node *nptr;
+};
 
+%token <i> INTEGER
+%token <c> VARIABLE
+
+
+%left GE LE EQ NE '>' '<'
 %left '+' '-'
 %left '*' '/'
-
-%right '='
-
+/*%nonassoc UMINUS*/
 %%
 
 program:
@@ -39,6 +47,8 @@ expr:
 	expr '/' expr	{ $$ = $1 / $3; }
 	|
 	'(' expr ')' 	{ $$ = $2; }
+	|
+	'-' expr %prec UMINUS { $$ = node(UMINUS, 1 , $2); }
 	;
 %%
 
@@ -53,4 +63,8 @@ int main(void)
 	return 0;
 }
 
+node* makenode
+{
+	
+}
 

@@ -17,10 +17,19 @@
 	}
 
 	/* operators */
-[()=+\-*/\n]	{return *yytext;}
+[-()<>=+*/\n]	{return *yytext;}
 
 	/* whitespace */
 [ \t]	;
+
+">="	return GE;
+"<+"	return LE;
+"=="	return EQ;
+"!="	return NE;
+"while"	return WHILE;
+"if"		return IF;
+"else"	return ELSE;
+"print"	return PRINT;
 
 	/* others */
 .	yyerror("Invalid character");
