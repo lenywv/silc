@@ -14,12 +14,13 @@
 #define CH_LT '<'
 #define CH_GT '>'
 #define CH_RELOP 	258
-#define CH_IF	259
-#define CH_ELSE	260
+#define CH_IF		259
+#define CH_IFELSE	260
 #define CH_IDENT	261
 #define CH_STMNT	262
-#define CH_READ	263
-
+#define CH_READ		263
+#define CH_WRITE	264
+#define CH_WHILE	265
 
 typedef struct treenode
 {

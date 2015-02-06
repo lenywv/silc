@@ -56,8 +56,10 @@ extern int yydebug;
     WRITE = 266,
     TRUE = 267,
     FALSE = 268,
-    RELOP = 269,
-    UMINUS = 270
+    DO = 269,
+    ENDWHILE = 270,
+    RELOP = 271,
+    UMINUS = 272
   };
 #endif
 /* Tokens.  */
@@ -72,8 +74,10 @@ extern int yydebug;
 #define WRITE 266
 #define TRUE 267
 #define FALSE 268
-#define RELOP 269
-#define UMINUS 270
+#define DO 269
+#define ENDWHILE 270
+#define RELOP 271
+#define UMINUS 272
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -86,7 +90,7 @@ union YYSTYPE
 //		char c;
 		struct treenode *nptr;
 
-#line 90 "y.tab.h" /* yacc.c:1909  */
+#line 94 "y.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

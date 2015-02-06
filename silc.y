@@ -15,7 +15,7 @@ int sym[26];
 
 %token INTEGER
 %token VARIABLE
-%token IF ELSE PRINT WHILE READ ENDIF WRITE TRUE FALSE
+%token IF ELSE PRINT WHILE READ ENDIF WRITE TRUE FALSE DO ENDWHILE
 
 %type <nptr> expr statement statementlist condition VARIABLE INTEGER 
 %type <i> RELOP
@@ -26,7 +26,7 @@ int sym[26];
 %%
 
 program:
-	program statement '\n'	{ printf("%d\n",evaluate($2)); }
+	program statement ';'	{ evaluate($2); }
 	|
 	;
 	
@@ -38,12 +38,14 @@ statement:
 	IF '(' condition ')' statementlist ENDIF {$$=make_node(CH_IF,$3,$5,NULL,0);}
 	|
 	IF '(' condition ')' statementlist ELSE statementlist ENDIF {$$=make_node(CH_IFELSE,$3,$5,$7,0);}
+	|
+	WHILE '(' condition ')' DO statementlist ENDWHILE { $$=make_node(CH_WHILE,$3,$6,NULL,0);}
 	;
 
 statementlist:
-	statement {$$=$1;}
+	statement ';' {$$=$1;}
 	|
-	statementlist statement {$$=make_node(CH_STMNT,$1,$2,NULL,0)};
+	statementlist statement ';' {$$=make_node(CH_STMNT,$1,$2,NULL,0);}
 	;
 	
 condition:
@@ -102,7 +104,7 @@ node* make_node(int op,node *left,node *right,node *middle,int value)
 int evaluate(node *ptr)
 {
 	int op=ptr->op,temp;
-	
+	char buf[30];
 	switch(op)
 	{
 		case CH_CONST:
@@ -120,24 +122,67 @@ int evaluate(node *ptr)
 		case CH_IDENT:
 			return sym[ptr->value];
 		case CH_IF:
-			if(evaluate(ptr->left)>0)
+			if(evaluate(ptr->left)!=0)
 				return evaluate(ptr->right);
 			return 0;
 		case CH_IFELSE:
-			if(evaluate(ptr->left)>0)
+			if(evaluate(ptr->left)!=0)
 				return evaluate(ptr->right);
 			else
 				return evaluate(ptr->middle);
-		case CH_CONST:
-			return ptr->value;
 		
 		case CH_STMNT:
 			evaluate(ptr->left);
 			return evaluate(ptr->right);
-		case CH_READ
+		case CH_READ:
 			scanf("%d",&temp);
-			return temp;		
+			return temp;	
+		case CH_WRITE:
+			printf("%d\n",evaluate(ptr->left));	
+			return 0;
+		case CH_ASSIGN:
+			sym[ptr->left->value]=evaluate(ptr->right);
+			return 0;
+		case CH_RELOP:
+			switch(ptr->value)
+			{
+				case CH_GE:
+					if(evaluate(ptr->left)>=evaluate(ptr->right))
+						return 1;
+					return 0;
+				case CH_LE:
+					if(evaluate(ptr->left)<=evaluate(ptr->right))
+						return 1;
+					return 0;
+				case CH_EQ:
+					if(evaluate(ptr->left)==evaluate(ptr->right))
+						return 1;
+					return 0;
+				case CH_NE:
+					if(evaluate(ptr->left)!=evaluate(ptr->right))
+						return 1;
+					return 0;
+				case CH_GT:
+					if(evaluate(ptr->left)>evaluate(ptr->right))
+						return 1;
+					return 0;
+				case CH_LT:
+					if(evaluate(ptr->left)<evaluate(ptr->right))
+						return 1;
+					return 0;
+				default:
+					return 0;
+			}
+		
+		case CH_WHILE:
+			while(evaluate(ptr->left)!=0)
+			{
+				evaluate(ptr->right);
+			}
+			return 0;
+			
 		default:
-			yyerror("Syntax error");		
+			sprintf(buf,"Syntax error %d",op);			
+			yyerror(buf);		
 	}
 }

@@ -13,10 +13,10 @@
 
 
 	/* operators */
-[-()=+*/\n]	{ return *yytext;}
+[-()=+*/;]	{ return *yytext;}
 
 	/* whitespace */
-[ \t]	;
+[ \t\n]	;
 
 
 ">="	{	yylval.i=CH_GE;	return RELOP; }
@@ -27,11 +27,14 @@
 "<"	{	yylval.i=CH_LT;	return RELOP; }
 
 "while"	return WHILE;
-"if"		return IF;
+"do"	return DO;
+"endwhile"	return ENDWHILE;
+"if"	return IF;
 "else"	return ELSE;
 "endif"	return ENDIF;
 "print"	return PRINT;
 "read"	return READ;
+"write" return WRITE;
 
 	/* others */
 .	yyerror("Invalid character");
