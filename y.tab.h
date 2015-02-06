@@ -52,8 +52,12 @@ extern int yydebug;
     PRINT = 262,
     WHILE = 263,
     READ = 264,
-    RELOP = 265,
-    UMINUS = 266
+    ENDIF = 265,
+    WRITE = 266,
+    TRUE = 267,
+    FALSE = 268,
+    RELOP = 269,
+    UMINUS = 270
   };
 #endif
 /* Tokens.  */
@@ -64,21 +68,25 @@ extern int yydebug;
 #define PRINT 262
 #define WHILE 263
 #define READ 264
-#define RELOP 265
-#define UMINUS 266
+#define ENDIF 265
+#define WRITE 266
+#define TRUE 267
+#define FALSE 268
+#define RELOP 269
+#define UMINUS 270
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 17 "silc.y" /* yacc.c:1909  */
+#line 10 "silc.y" /* yacc.c:1909  */
 
 		int i;
 //		char c;
 		struct treenode *nptr;
 
-#line 82 "y.tab.h" /* yacc.c:1909  */
+#line 90 "y.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

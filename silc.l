@@ -6,54 +6,32 @@
 
 %%
 	/* integers */
-[0-9]+ {
-		yylval.i = atoi(yytext);
-		return INTEGER;
-  	}
+[0-9]+	{ yylval.nptr = make_node(CH_CONST,NULL,NULL,NULL,atoi(yytext));	return INTEGER; }
 
 	/* variables */
-[a-z]	{
-		yylval.i = *yytext - 'a' ;
-		return VARIABLE;
-	}
+[a-z]		{ yylval.nptr = make_node(CH_IDENT,NULL,NULL,NULL,*yytext - 'a');	return VARIABLE; }
 
-"read"	return READ;
 
 	/* operators */
-[-()=+*/\n]	{return *yytext;}
+[-()=+*/\n]	{ return *yytext;}
 
 	/* whitespace */
 [ \t]	;
 
-">="	{
-		yylval.i=CH_GE;
-		return RELOP;
-	}
-"<="	{
-		yylval.i=CH_LE;
-		return RELOP;
-	}
-"=="	{
-		yylval.i=CH_EQ;
-		return RELOP;
-	}
-"!="	{
-		yylval.i=CH_NE;
-		return RELOP;
-	}
-">"	{
-		yylval.i=CH_GT;
-		return RELOP;
-	}
-"<"	{
-		yylval.i=CH_LT;
-		return RELOP;
-	}
+
+">="	{	yylval.i=CH_GE;	return RELOP; }
+"<="	{	yylval.i=CH_LE;	return RELOP; }
+"=="	{	yylval.i=CH_EQ;	return RELOP; }
+"!="	{	yylval.i=CH_NE;	return RELOP; }
+">"	{	yylval.i=CH_GT;	return RELOP; }
+"<"	{	yylval.i=CH_LT;	return RELOP; }
 
 "while"	return WHILE;
-"if"	return IF;
+"if"		return IF;
 "else"	return ELSE;
+"endif"	return ENDIF;
 "print"	return PRINT;
+"read"	return READ;
 
 	/* others */
 .	yyerror("Invalid character");
