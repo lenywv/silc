@@ -15,6 +15,8 @@
 "!="	{	yylval.i=CH_NE;	return RELOP; }
 ">"	{	yylval.i=CH_GT;	return RELOP; }
 "<"	{	yylval.i=CH_LT;	return RELOP; }
+"&&"	{	yylval.i=CH_LOGAND; return LOGOP; }
+"||"	{	yylval.i=CH_LOGOR;	return LOGOP; }
 
 "while"	return WHILE;
 "do"	return DO;
@@ -26,10 +28,12 @@
 "read"	return READ;
 "write"	return WRITE;
 "decl"	return DECL;
+"true"	return TRUE;
+"false"	return FALSE;
 "enddecl"	return ENDDECL;
 "integer"	return INTEGER;
 "boolean"	return BOOLEAN;
-
+"end"		return END;
 	/* integers constant*/
 [0-9]+	{ yylval.nptr = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_INT,atoi(yytext));	return CONSTANT; }
 
@@ -38,7 +42,7 @@
 
 
 	/* operators */
-[-()=+*/;]	{ return *yytext;}
+[-()=+*/;,\[\]]	{ return *yytext;}
 
 	/* others */
 .	yyerror("Invalid character");

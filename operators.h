@@ -21,6 +21,11 @@
 #define CH_READ		263
 #define CH_WRITE	264
 #define CH_WHILE	265
+#define CH_IDENTARR	266
+#define CH_ASSIGNARR	267
+#define CH_LOGAND	268
+#define CH_LOGOR	269
+#define CH_LOGOP	270
 
 #define TYPE_BOOL	0
 #define TYPE_INT	1

@@ -15,26 +15,26 @@ symnode *root;
 		struct treenode *nptr;
 };
 
-%token CONSTANT IDENT 
+%token CONSTANT IDENT END
 %token INTEGER BOOLEAN DECL ENDDECL
 %token IF ELSE PRINT WHILE READ ENDIF WRITE TRUE FALSE DO ENDWHILE
 
 %type <nptr> expr statement statementlist condition CONSTANT
-%type <i> RELOP
+%type <i> RELOP LOGOP
 %type <name> IDENT
-%left RELOP
+%left RELOP LOGOP
 %left '+' '-'
 %left '*' '/'
 %nonassoc UMINUS
 %%
 
 program:
-	declarations program statement ';'	{ evaluate($3); }
+	declarations program statementlist  END { evaluate($3); exit(0);}
 	|
 	;
 	
 declarations:
-	DECL	declist ENDDECL 
+	DECL declist ENDDECL 
 	;
 
 declist:
@@ -44,13 +44,13 @@ declist:
 	;
 
 declaration:
-	vartype varlist ';'
+	vartype varlist 
 	;
 
 vartype:
-	INTEGER {type=1;}
+	INTEGER {type=TYPE_INT;}
 	|
-	BOOLEAN {type=0;}
+	BOOLEAN {type=TYPE_BOOL;}
 	;
 	
 varlist:
@@ -61,11 +61,16 @@ varlist:
 
 variable:
 	IDENT {makeSymEntry($1,root,1,type);}
-	;
-statement:
-	expr	{ $$=$1; }
 	|
+	IDENT '[' CONSTANT ']' {makeSymEntry($1,root,$3->value,type);}
+	;
+
+statement:
 	IDENT '=' expr {$$=make_node(CH_ASSIGN,NULL,$3,NULL,$1,TYPE_VOID,0);}
+	|
+	IDENT '[' expr ']' '=' expr {$$=make_node(CH_ASSIGNARR,$3,$6,NULL,$1,TYPE_VOID,0);}
+	|
+	WRITE '(' expr ')' { $$ = make_node(CH_WRITE,$3,NULL,NULL,NULL,TYPE_VOID,0); }
 	|
 	IF '(' condition ')' statementlist ENDIF {$$=make_node(CH_IF,$3,$5,NULL,NULL,TYPE_VOID,0);}
 	|
@@ -85,17 +90,19 @@ condition:
 	|
 	FALSE			{ $$ = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_BOOL,0);}
 	|
-	expr RELOP expr  { $$ = make_node(CH_RELOP,$1,$3,NULL,NULL,TYPE_BOOL,$2);}
+	expr RELOP expr  	{ $$ = make_node(CH_RELOP,$1,$3,NULL,NULL,TYPE_BOOL,$2);}
+	|
+	condition LOGOP condition { $$ = make_node(CH_LOGOP,$1,$3,NULL,NULL,TYPE_BOOL,$2);}
 	;
 	
 expr: 
-	CONSTANT		{ $$ = $1; }
+	CONSTANT	{ $$ = $1; }
 	|
-	IDENT			{ $$ =make_node(CH_IDENT,NULL,NULL,NULL,$1,TYPE_INT,0);}
+	IDENT		{ $$ =make_node(CH_IDENT,NULL,NULL,NULL,$1,TYPE_INT,0);}
+	|
+	IDENT '[' expr ']'	{ $$ =make_node(CH_IDENTARR,$3,NULL,NULL,$1,TYPE_INT,0);}
 	|
 	READ '(' ')'	{ $$ = make_node(CH_READ,NULL,NULL,NULL,NULL,TYPE_INT,0); }
-	|
-	WRITE '(' expr ')' { $$ = make_node(CH_WRITE,$3,NULL,NULL,NULL,TYPE_INT,0); }
 	|
 	expr '+' expr	{ $$ = make_node(CH_ADD,$1, $3,NULL,NULL,TYPE_INT, 0); }
 	|
@@ -127,6 +134,7 @@ int evaluate(node *ptr)
 {
 	int op=ptr->op,temp;
 	char buf[30];
+	symnode *symentry;
 	switch(op)
 	{
 		case CH_CONST:
@@ -142,7 +150,12 @@ int evaluate(node *ptr)
 		case CH_UMINUS:
 			return -evaluate(ptr->left);
 		case CH_IDENT:
-			return sym[ptr->value];
+			symentry=lookup(ptr->name,root);
+			return *(symentry->binding);
+		case CH_IDENTARR:
+			temp=evaluate(ptr->left);
+			symentry=lookup(ptr->name,root);
+			return *(symentry->binding+temp);
 		case CH_IF:
 			if(evaluate(ptr->left)!=0)
 				return evaluate(ptr->right);
@@ -157,13 +170,20 @@ int evaluate(node *ptr)
 			evaluate(ptr->left);
 			return evaluate(ptr->right);
 		case CH_READ:
+			printf("enter ");
 			scanf("%d",&temp);
 			return temp;	
 		case CH_WRITE:
 			printf("%d\n",evaluate(ptr->left));	
 			return 0;
 		case CH_ASSIGN:
-			sym[ptr->left->value]=evaluate(ptr->right);
+			symentry=lookup(ptr->name,root);
+			*(symentry->binding)=evaluate(ptr->right);
+			return 0;
+		case CH_ASSIGNARR:
+			symentry=lookup(ptr->name,root);
+			temp=evaluate(ptr->left);
+			*(symentry->binding+temp)=evaluate(ptr->right);
 			return 0;
 		case CH_RELOP:
 			switch(ptr->value)
@@ -195,7 +215,21 @@ int evaluate(node *ptr)
 				default:
 					return 0;
 			}
-		
+		case CH_LOGOP:
+			switch(ptr->value)
+			{
+				case CH_LOGAND:
+					if(evaluate(ptr->left)&&evaluate(ptr->right))
+						return 1;
+					return 0;
+
+				case CH_LOGOR:
+					if(evaluate(ptr->left)||evaluate(ptr->right))
+						return 1;
+					return 0;
+				default:
+					return 0;
+			}
 		case CH_WHILE:
 			while(evaluate(ptr->left)!=0)
 			{

@@ -47,45 +47,49 @@ extern int yydebug;
   {
     CONSTANT = 258,
     IDENT = 259,
-    INTEGER = 260,
-    BOOLEAN = 261,
-    DECL = 262,
-    ENDDECL = 263,
-    IF = 264,
-    ELSE = 265,
-    PRINT = 266,
-    WHILE = 267,
-    READ = 268,
-    ENDIF = 269,
-    WRITE = 270,
-    TRUE = 271,
-    FALSE = 272,
-    DO = 273,
-    ENDWHILE = 274,
-    RELOP = 275,
-    UMINUS = 276
+    END = 260,
+    INTEGER = 261,
+    BOOLEAN = 262,
+    DECL = 263,
+    ENDDECL = 264,
+    IF = 265,
+    ELSE = 266,
+    PRINT = 267,
+    WHILE = 268,
+    READ = 269,
+    ENDIF = 270,
+    WRITE = 271,
+    TRUE = 272,
+    FALSE = 273,
+    DO = 274,
+    ENDWHILE = 275,
+    RELOP = 276,
+    LOGOP = 277,
+    UMINUS = 278
   };
 #endif
 /* Tokens.  */
 #define CONSTANT 258
 #define IDENT 259
-#define INTEGER 260
-#define BOOLEAN 261
-#define DECL 262
-#define ENDDECL 263
-#define IF 264
-#define ELSE 265
-#define PRINT 266
-#define WHILE 267
-#define READ 268
-#define ENDIF 269
-#define WRITE 270
-#define TRUE 271
-#define FALSE 272
-#define DO 273
-#define ENDWHILE 274
-#define RELOP 275
-#define UMINUS 276
+#define END 260
+#define INTEGER 261
+#define BOOLEAN 262
+#define DECL 263
+#define ENDDECL 264
+#define IF 265
+#define ELSE 266
+#define PRINT 267
+#define WHILE 268
+#define READ 269
+#define ENDIF 270
+#define WRITE 271
+#define TRUE 272
+#define FALSE 273
+#define DO 274
+#define ENDWHILE 275
+#define RELOP 276
+#define LOGOP 277
+#define UMINUS 278
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -98,7 +102,7 @@ union YYSTYPE
 		char *name;
 		struct treenode *nptr;
 
-#line 102 "y.tab.h" /* yacc.c:1909  */
+#line 106 "y.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

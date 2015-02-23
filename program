@@ -1,0 +1,18 @@
+	decl
+	integer a[10],b;
+	enddecl
+	a[0]=1;
+	a[1]=2;
+	a[2]=3;
+	a[3]=4;
+	a[4]=5;
+	a[5]=6;
+	a[6]=7;
+	b=0;
+	a[7]=read();
+	while(b<8) do
+	write(a[b]);
+	b=b+1;
+	endwhile;
+	end
+

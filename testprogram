@@ -1,0 +1,9 @@
+decl
+integer a;
+enddecl
+a=5;
+write(a);
+a=read();
+write(a);
+end
+
