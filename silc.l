@@ -5,16 +5,6 @@
 %}
 
 %%
-	/* integers */
-[0-9]+	{ yylval.nptr = make_node(CH_CONST,NULL,NULL,NULL,atoi(yytext));	return INTEGER; }
-
-	/* variables */
-[a-z]		{ yylval.nptr = make_node(CH_IDENT,NULL,NULL,NULL,*yytext - 'a');	return VARIABLE; }
-
-
-	/* operators */
-[-()=+*/;]	{ return *yytext;}
-
 	/* whitespace */
 [ \t\n]	;
 
@@ -34,7 +24,21 @@
 "endif"	return ENDIF;
 "print"	return PRINT;
 "read"	return READ;
-"write" return WRITE;
+"write"	return WRITE;
+"decl"	return DECL;
+"enddecl"	return ENDDECL;
+"integer"	return INTEGER;
+"boolean"	return BOOLEAN;
+
+	/* integers constant*/
+[0-9]+	{ yylval.nptr = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_INT,atoi(yytext));	return CONSTANT; }
+
+	/* variables */
+[a-zA-Z][A-Za-z0-9]*	{yylval.name=strdup(yytext);return IDENT; }
+
+
+	/* operators */
+[-()=+*/;]	{ return *yytext;}
 
 	/* others */
 .	yyerror("Invalid character");

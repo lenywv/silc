@@ -22,10 +22,16 @@
 #define CH_WRITE	264
 #define CH_WHILE	265
 
+#define TYPE_BOOL	0
+#define TYPE_INT	1
+#define TYPE_VOID	2
+
 typedef struct treenode
 {
-	int op;
+	int op,type;
+	char *name;
 	struct treenode *left,*right,*middle;
 	int value;
 }node;
-node* make_node(int op,node *left,node *right,node *middle,int value);
+node* make_node(int op,node *left,node *right,node *middle,char *name,int type,int value);
+

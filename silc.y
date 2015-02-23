@@ -1,24 +1,27 @@
 %{
 #include <stdio.h>
 #include "operators.h"
+#include "symbol.h"
 int yytext(void);
 void yyerror(char *);
-int sym[26];
+int type;
+symnode *root;
 %}
 
 %union
 {
 		int i;
-//		char c;
+		char *name;
 		struct treenode *nptr;
 };
 
-%token INTEGER
-%token VARIABLE
+%token CONSTANT IDENT 
+%token INTEGER BOOLEAN DECL ENDDECL
 %token IF ELSE PRINT WHILE READ ENDIF WRITE TRUE FALSE DO ENDWHILE
 
-%type <nptr> expr statement statementlist condition VARIABLE INTEGER 
+%type <nptr> expr statement statementlist condition CONSTANT
 %type <i> RELOP
+%type <name> IDENT
 %left RELOP
 %left '+' '-'
 %left '*' '/'
@@ -26,56 +29,85 @@ int sym[26];
 %%
 
 program:
-	program statement ';'	{ evaluate($2); }
+	declarations program statement ';'	{ evaluate($3); }
 	|
 	;
 	
+declarations:
+	DECL	declist ENDDECL 
+	;
+
+declist:
+	declist declaration ';' 
+	|
+	declaration ';'
+	;
+
+declaration:
+	vartype varlist ';'
+	;
+
+vartype:
+	INTEGER {type=1;}
+	|
+	BOOLEAN {type=0;}
+	;
+	
+varlist:
+	varlist ',' variable
+	|
+	variable 
+	;
+
+variable:
+	IDENT {makeSymEntry($1,root,1,type);}
+	;
 statement:
 	expr	{ $$=$1; }
 	|
-	VARIABLE '=' expr {$$=make_node(CH_ASSIGN,$1,$3,NULL,0);}
+	IDENT '=' expr {$$=make_node(CH_ASSIGN,NULL,$3,NULL,$1,TYPE_VOID,0);}
 	|
-	IF '(' condition ')' statementlist ENDIF {$$=make_node(CH_IF,$3,$5,NULL,0);}
+	IF '(' condition ')' statementlist ENDIF {$$=make_node(CH_IF,$3,$5,NULL,NULL,TYPE_VOID,0);}
 	|
-	IF '(' condition ')' statementlist ELSE statementlist ENDIF {$$=make_node(CH_IFELSE,$3,$5,$7,0);}
+	IF '(' condition ')' statementlist ELSE statementlist ENDIF {$$=make_node(CH_IFELSE,$3,$5,$7,NULL,TYPE_VOID,0);}
 	|
-	WHILE '(' condition ')' DO statementlist ENDWHILE { $$=make_node(CH_WHILE,$3,$6,NULL,0);}
+	WHILE '(' condition ')' DO statementlist ENDWHILE { $$=make_node(CH_WHILE,$3,$6,NULL,NULL,TYPE_VOID,0);}
 	;
 
 statementlist:
 	statement ';' {$$=$1;}
 	|
-	statementlist statement ';' {$$=make_node(CH_STMNT,$1,$2,NULL,0);}
+	statementlist statement ';' {$$=make_node(CH_STMNT,$1,$2,NULL,NULL,TYPE_VOID,0);}
 	;
 	
 condition:
-	TRUE			{ $$ = make_node(CH_CONST,NULL,NULL,NULL,1);}
+	TRUE			{ $$ = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_BOOL,1);}
 	|
-	FALSE			{ $$ = make_node(CH_CONST,NULL,NULL,NULL,0);}
+	FALSE			{ $$ = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_BOOL,0);}
 	|
-	expr RELOP expr  { $$ = make_node(CH_RELOP,$1,$3,NULL,$2);}
+	expr RELOP expr  { $$ = make_node(CH_RELOP,$1,$3,NULL,NULL,TYPE_BOOL,$2);}
 	;
 	
 expr: 
-	INTEGER		{ $$ = $1; }
+	CONSTANT		{ $$ = $1; }
 	|
-	VARIABLE		{ $$ = $1;}
+	IDENT			{ $$ =make_node(CH_IDENT,NULL,NULL,NULL,$1,TYPE_INT,0);}
 	|
-	READ '(' ')'	{ $$ = make_node(CH_READ,NULL,NULL,NULL,0); }
+	READ '(' ')'	{ $$ = make_node(CH_READ,NULL,NULL,NULL,NULL,TYPE_INT,0); }
 	|
-	WRITE '(' expr ')' { $$ = make_node(CH_WRITE,$3,NULL,NULL,0); }
+	WRITE '(' expr ')' { $$ = make_node(CH_WRITE,$3,NULL,NULL,NULL,TYPE_INT,0); }
 	|
-	expr '+' expr	{ $$ = make_node(CH_ADD,$1, $3,NULL, 0); }
+	expr '+' expr	{ $$ = make_node(CH_ADD,$1, $3,NULL,NULL,TYPE_INT, 0); }
 	|
-	expr '-' expr	{ $$ = make_node(CH_SUB,$1, $3,NULL, 0); }
+	expr '-' expr	{ $$ = make_node(CH_SUB,$1, $3,NULL,NULL,TYPE_INT, 0); }
 	|
-	expr '*' expr	{ $$ = make_node(CH_MUL,$1, $3,NULL, 0); }
+	expr '*' expr	{ $$ = make_node(CH_MUL,$1, $3,NULL,NULL,TYPE_INT, 0); }
 	|
-	expr '/' expr	{ $$ = make_node(CH_DIV,$1, $3,NULL, 0); }
+	expr '/' expr	{ $$ = make_node(CH_DIV,$1, $3,NULL,NULL,TYPE_INT, 0); }
 	|
 	'(' expr ')' 	{ $$ = $2; }
 	|
-	'-' expr %prec UMINUS { $$ = make_node(CH_UMINUS, $2, NULL,NULL,0); }
+	'-' expr %prec UMINUS { $$ = make_node(CH_UMINUS, $2, NULL,NULL,NULL,TYPE_INT,0); }
 	;
 %%
 
@@ -86,19 +118,9 @@ void yyerror (char *s)
 
 int main(void)
 {
+	root=construct();
 	yyparse();
 	return 0;
-}
-
-node* make_node(int op,node *left,node *right,node *middle,int value)
-{
-	node *ptr=(node*)malloc(sizeof(node));
-	ptr->op=op;
-	ptr->left=left;
-	ptr->right=right;
-	ptr->middle=middle;
-	ptr->value=value;
-	return ptr;
 }
 
 int evaluate(node *ptr)
