@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "operators.h"
 #include "symbol.h"
+#include "types.h"
 int yytext(void);
 void yyerror(char *);
 int type;
@@ -19,7 +20,7 @@ symnode *root;
 %token INTEGER BOOLEAN DECL ENDDECL
 %token IF ELSE PRINT WHILE READ ENDIF WRITE TRUE FALSE DO ENDWHILE
 
-%type <nptr> expr statement statementlist condition CONSTANT
+%type <nptr> expr statement statementlist CONSTANT
 %type <i> RELOP LOGOP
 %type <name> IDENT
 %left RELOP LOGOP
@@ -66,17 +67,17 @@ variable:
 	;
 
 statement:
-	IDENT '=' expr {$$=make_node(CH_ASSIGN,NULL,$3,NULL,$1,TYPE_VOID,0);}
+	IDENT '=' expr 			{if(isType($3,getVarType($1))			$$=make_node(CH_ASSIGN,NULL,$3,NULL,$1,TYPE_VOID,0);	yyerror("Type error");}
 	|
-	IDENT '[' expr ']' '=' expr {$$=make_node(CH_ASSIGNARR,$3,$6,NULL,$1,TYPE_VOID,0);}
+	IDENT '[' expr ']' '=' expr 	{if(isType($6,getVarType($1))&&isInt($3))	$$=make_node(CH_ASSIGNARR,$3,$6,NULL,$1,TYPE_VOID,0);	yyerror("Type error");}
 	|
-	WRITE '(' expr ')' { $$ = make_node(CH_WRITE,$3,NULL,NULL,NULL,TYPE_VOID,0); }
+	WRITE '(' expr ')' 		{if(isInt($3))					$$=make_node(CH_WRITE,$3,NULL,NULL,NULL,TYPE_VOID,0); yyerror("Type error");}
 	|
-	IF '(' condition ')' statementlist ENDIF {$$=make_node(CH_IF,$3,$5,NULL,NULL,TYPE_VOID,0);}
+	IF '(' expr ')' statementlist ENDIF 				{if(isBool($3))	$$=make_node(CH_IF,$3,$5,NULL,NULL,TYPE_VOID,0);	yyerror("Type error");}
 	|
-	IF '(' condition ')' statementlist ELSE statementlist ENDIF {$$=make_node(CH_IFELSE,$3,$5,$7,NULL,TYPE_VOID,0);}
+	IF '(' expr ')' statementlist ELSE statementlist ENDIF 	{if(isBool($3))	$$=make_node(CH_IFELSE,$3,$5,$7,NULL,TYPE_VOID,0);	yyerror("Type error");}
 	|
-	WHILE '(' condition ')' DO statementlist ENDWHILE { $$=make_node(CH_WHILE,$3,$6,NULL,NULL,TYPE_VOID,0);}
+	WHILE '(' expr ')' DO statementlist ENDWHILE 			{if(isBool($3))	$$=make_node(CH_WHILE,$3,$6,NULL,NULL,TYPE_VOID,0);	yyerror("Type error"); }
 	;
 
 statementlist:
@@ -85,36 +86,35 @@ statementlist:
 	statementlist statement ';' {$$=make_node(CH_STMNT,$1,$2,NULL,NULL,TYPE_VOID,0);}
 	;
 	
-condition:
-	TRUE			{ $$ = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_BOOL,1);}
-	|
-	FALSE			{ $$ = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_BOOL,0);}
-	|
-	expr RELOP expr  	{ $$ = make_node(CH_RELOP,$1,$3,NULL,NULL,TYPE_BOOL,$2);}
-	|
-	condition LOGOP condition { $$ = make_node(CH_LOGOP,$1,$3,NULL,NULL,TYPE_BOOL,$2);}
-	;
 	
 expr: 
 	CONSTANT	{ $$ = $1; }
 	|
-	IDENT		{ $$ =make_node(CH_IDENT,NULL,NULL,NULL,$1,TYPE_INT,0);}
+	IDENT		{ $$ =make_node(CH_IDENT,NULL,NULL,NULL,$1,getVarType($1),0);}
 	|
-	IDENT '[' expr ']'	{ $$ =make_node(CH_IDENTARR,$3,NULL,NULL,$1,TYPE_INT,0);}
+	IDENT '[' expr ']'	{ if(isInt($3))	$$ =make_node(CH_IDENTARR,$3,NULL,NULL,$1,getVarType($1),0); yyerror("Type error");}
 	|
 	READ '(' ')'	{ $$ = make_node(CH_READ,NULL,NULL,NULL,NULL,TYPE_INT,0); }
 	|
-	expr '+' expr	{ $$ = make_node(CH_ADD,$1, $3,NULL,NULL,TYPE_INT, 0); }
+	expr '+' expr	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_ADD,$1, $3,NULL,NULL,TYPE_INT, 0); yyerror("Type error");}
 	|
-	expr '-' expr	{ $$ = make_node(CH_SUB,$1, $3,NULL,NULL,TYPE_INT, 0); }
+	expr '-' expr	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_SUB,$1, $3,NULL,NULL,TYPE_INT, 0); yyerror("Type error");}
 	|
-	expr '*' expr	{ $$ = make_node(CH_MUL,$1, $3,NULL,NULL,TYPE_INT, 0); }
+	expr '*' expr	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_MUL,$1, $3,NULL,NULL,TYPE_INT, 0); yyerror("Type error");}
 	|
-	expr '/' expr	{ $$ = make_node(CH_DIV,$1, $3,NULL,NULL,TYPE_INT, 0); }
+	expr '/' expr	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_DIV,$1, $3,NULL,NULL,TYPE_INT, 0); yyerror("Type error");}
 	|
 	'(' expr ')' 	{ $$ = $2; }
 	|
 	'-' expr %prec UMINUS { $$ = make_node(CH_UMINUS, $2, NULL,NULL,NULL,TYPE_INT,0); }
+	|
+	TRUE			{ $$ = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_BOOL,1);}
+	|
+	FALSE			{ $$ = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_BOOL,0);}
+	|
+	expr RELOP expr  	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_RELOP,$1,$3,NULL,NULL,TYPE_BOOL,$2);	yyerror("Type error");}
+	|
+	expr LOGOP expr 	{ if(isBool($1)&&isBool($3))	$$ = make_node(CH_LOGOP,$1,$3,NULL,NULL,TYPE_BOOL,$2);	yyerror("Type error");}
 	;
 %%
 

@@ -9,6 +9,7 @@ node* make_node(int op,node *left,node *right,node *middle,char *name,int type,i
 	ptr->right=right;
 	ptr->middle=middle;
 	ptr->value=value;
+	ptr->type=type;
 	if(name!=NULL)
 		ptr->name=strdup(name);
 	else
