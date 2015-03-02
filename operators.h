@@ -27,10 +27,6 @@
 #define CH_LOGOR	269
 #define CH_LOGOP	270
 
-#define TYPE_BOOL	0
-#define TYPE_INT	1
-#define TYPE_VOID	2
-
 typedef struct treenode
 {
 	int op,type;

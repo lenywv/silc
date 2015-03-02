@@ -27,6 +27,12 @@ symnode* construct()
 		return root;
 }
 
+int getVarType(char *n,symnode *table)
+{
+	symnode *entry=lookup(n,table);
+	return entry->type;
+}
+
 symnode* lookup(char *n,symnode *table) 
 {
 		int a=0;
