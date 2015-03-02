@@ -1,3 +1,5 @@
+#ifndef _OPERATOR_H
+#define _OPERATOR_H
 
 #define CH_ADD '+'
 #define CH_SUB '-'
@@ -35,4 +37,4 @@ typedef struct treenode
 	int value;
 }node;
 node* make_node(int op,node *left,node *right,node *middle,char *name,int type,int value);
-
+#endif

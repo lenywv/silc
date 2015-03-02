@@ -1,9 +1,9 @@
 decl
-integer a;
+boolean a;
 enddecl
-a=5;
-write(a);
-a=read();
-write(a);
+a=(3==3);
+if(a)
+write(8);
+endif;
 end
 

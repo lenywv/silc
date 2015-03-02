@@ -368,8 +368,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 30
-#define YY_END_OF_BUFFER 31
+#define YY_NUM_RULES 31
+#define YY_END_OF_BUFFER 32
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -379,15 +379,15 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[89] =
     {   0,
-        0,    0,   31,   29,    1,    1,   29,   29,   28,   26,
-        7,   28,    6,   27,   27,   27,   27,   27,   27,   27,
-       27,   27,   27,   29,    5,    8,   26,    3,    4,    2,
-       27,   27,   27,   11,   27,   27,   27,   13,   27,   27,
-       27,   27,   27,   27,    9,   27,   27,   27,   25,   27,
-       27,   27,   27,   27,   27,   27,   27,   19,   14,   27,
-       27,   27,   27,   27,   27,   17,   20,   27,   27,   27,
-       27,   15,   27,   21,   27,   16,   10,   18,   27,   27,
-       27,   27,   24,   22,   27,   23,   12,    0
+        0,    0,   32,   30,    1,    2,   30,   30,   29,   27,
+        8,   29,    7,   28,   28,   28,   28,   28,   28,   28,
+       28,   28,   28,   30,    6,    9,   27,    4,    5,    3,
+       28,   28,   28,   12,   28,   28,   28,   14,   28,   28,
+       28,   28,   28,   28,   10,   28,   28,   28,   26,   28,
+       28,   28,   28,   28,   28,   28,   28,   20,   15,   28,
+       28,   28,   28,   28,   28,   18,   21,   28,   28,   28,
+       28,   16,   28,   22,   28,   17,   11,   19,   28,   28,
+       28,   28,   25,   23,   28,   24,   13,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -510,7 +510,9 @@ char *yytext;
 #include <stdlib.h>
 #include "y.tab.h"
 #include "operators.h"
-#line 514 "lex.yy.c"
+#include "types.h"
+int lineno=1;
+#line 516 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -697,10 +699,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 7 "silc.l"
+#line 9 "silc.l"
 
 	/* whitespace */
-#line 704 "lex.yy.c"
+#line 706 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -784,161 +786,166 @@ do_action:	/* This label is used only to access EOF actions. */
 			goto yy_find_action;
 
 case 1:
-/* rule 1 can match eol */
 YY_RULE_SETUP
-#line 9 "silc.l"
+#line 11 "silc.l"
 ;
 	YY_BREAK
 case 2:
+/* rule 2 can match eol */
 YY_RULE_SETUP
 #line 12 "silc.l"
-{	yylval.i=CH_GE;	return RELOP; }
+{lineno++;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 13 "silc.l"
-{	yylval.i=CH_LE;	return RELOP; }
+#line 15 "silc.l"
+{	yylval.i=CH_GE;	return RELOP; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 14 "silc.l"
-{	yylval.i=CH_EQ;	return RELOP; }
+#line 16 "silc.l"
+{	yylval.i=CH_LE;	return RELOP; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 15 "silc.l"
-{	yylval.i=CH_NE;	return RELOP; }
+#line 17 "silc.l"
+{	yylval.i=CH_EQ;	return RELOP; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 16 "silc.l"
-{	yylval.i=CH_GT;	return RELOP; }
+#line 18 "silc.l"
+{	yylval.i=CH_NE;	return RELOP; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 17 "silc.l"
-{	yylval.i=CH_LT;	return RELOP; }
+#line 19 "silc.l"
+{	yylval.i=CH_GT;	return RELOP; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 18 "silc.l"
-{	yylval.i=CH_LOGAND; return LOGOP; }
+#line 20 "silc.l"
+{	yylval.i=CH_LT;	return RELOP; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 19 "silc.l"
-{	yylval.i=CH_LOGOR;	return LOGOP; }
+#line 21 "silc.l"
+{	yylval.i=CH_LOGAND; return LOGOP; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 21 "silc.l"
-return WHILE;
+#line 22 "silc.l"
+{	yylval.i=CH_LOGOR;	return LOGOP; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 22 "silc.l"
-return DO;
+#line 24 "silc.l"
+return WHILE;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 23 "silc.l"
-return ENDWHILE;
+#line 25 "silc.l"
+return DO;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 24 "silc.l"
-return IF;
+#line 26 "silc.l"
+return ENDWHILE;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 25 "silc.l"
-return ELSE;
+#line 27 "silc.l"
+return IF;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 26 "silc.l"
-return ENDIF;
+#line 28 "silc.l"
+return ELSE;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 27 "silc.l"
-return PRINT;
+#line 29 "silc.l"
+return ENDIF;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 28 "silc.l"
-return READ;
+#line 30 "silc.l"
+return PRINT;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 29 "silc.l"
-return WRITE;
+#line 31 "silc.l"
+return READ;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 30 "silc.l"
-return DECL;
+#line 32 "silc.l"
+return WRITE;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 31 "silc.l"
-return TRUE;
+#line 33 "silc.l"
+return DECL;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 32 "silc.l"
-return FALSE;
+#line 34 "silc.l"
+return TRUE;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 33 "silc.l"
-return ENDDECL;
+#line 35 "silc.l"
+return FALSE;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 34 "silc.l"
-return INTEGER;
+#line 36 "silc.l"
+return ENDDECL;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 35 "silc.l"
-return BOOLEAN;
+#line 37 "silc.l"
+return INTEGER;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 36 "silc.l"
+#line 38 "silc.l"
+return BOOLEAN;
+	YY_BREAK
+case 26:
+YY_RULE_SETUP
+#line 39 "silc.l"
 return END;
 	YY_BREAK
 /* integers constant*/
-case 26:
-YY_RULE_SETUP
-#line 38 "silc.l"
-{ yylval.nptr = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_INT,atoi(yytext));	return CONSTANT; }
-	YY_BREAK
-/* variables */
 case 27:
 YY_RULE_SETUP
 #line 41 "silc.l"
+{ yylval.nptr = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_INT,atoi(yytext));	return CONSTANT; }
+	YY_BREAK
+/* variables */
+case 28:
+YY_RULE_SETUP
+#line 44 "silc.l"
 {yylval.name=strdup(yytext);return IDENT; }
 	YY_BREAK
 /* operators */
-case 28:
-YY_RULE_SETUP
-#line 45 "silc.l"
-{ return *yytext;}
-	YY_BREAK
-/* others */
 case 29:
 YY_RULE_SETUP
 #line 48 "silc.l"
-yyerror("Invalid character");
+{ return *yytext;}
 	YY_BREAK
+/* others */
 case 30:
 YY_RULE_SETUP
-#line 50 "silc.l"
+#line 51 "silc.l"
+yyerror("Invalid character");
+	YY_BREAK
+case 31:
+YY_RULE_SETUP
+#line 53 "silc.l"
 ECHO;
 	YY_BREAK
-#line 942 "lex.yy.c"
+#line 949 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1936,7 +1943,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 50 "silc.l"
+#line 53 "silc.l"
 
 
 

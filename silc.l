@@ -2,11 +2,14 @@
 #include <stdlib.h>
 #include "y.tab.h"
 #include "operators.h"
+#include "types.h"
+int lineno=1;
 %}
 
 %%
 	/* whitespace */
-[ \t\n]	;
+[ \t]	;
+[\n]	{lineno++;}
 
 
 ">="	{	yylval.i=CH_GE;	return RELOP; }

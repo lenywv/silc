@@ -63,8 +63,8 @@ extern int yydebug;
     FALSE = 273,
     DO = 274,
     ENDWHILE = 275,
-    RELOP = 276,
-    LOGOP = 277,
+    LOGOP = 276,
+    RELOP = 277,
     UMINUS = 278
   };
 #endif
@@ -87,8 +87,8 @@ extern int yydebug;
 #define FALSE 273
 #define DO 274
 #define ENDWHILE 275
-#define RELOP 276
-#define LOGOP 277
+#define LOGOP 276
+#define RELOP 277
 #define UMINUS 278
 
 /* Value type.  */
@@ -96,7 +96,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 12 "silc.y" /* yacc.c:1909  */
+#line 16 "silc.y" /* yacc.c:1909  */
 
 		int i;
 		char *name;
