@@ -5,6 +5,7 @@
 #define CH_SUB '-'
 #define CH_DIV '/'
 #define CH_MUL '*'
+#define CH_MOD '%'
 #define CH_CONST ' '
 #define CH_ASSIGN '='
 #define CH_UMINUS 257

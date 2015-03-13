@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
 #include "operators.h"
 #include "symbol.h"
 #include "types.h"
@@ -29,12 +30,14 @@ symnode *root;
 %left LOGOP
 %left RELOP 
 %left '+' '-'
-%left '*' '/'
+%left '%' '*' '/'
 %nonassoc UMINUS
 %%
 
 program:
-	declarations program statementlist  END { evaluate($3); exit(1);}
+	declarations statementlist  END { execute($2); exit(1);}
+	|
+	statementlist  END { execute($1); exit(1);}
 	|
 	;
 	
@@ -108,6 +111,8 @@ expr:
 	|
 	expr '/' expr	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_DIV,$1, $3,NULL,NULL,TYPE_INT, 0); else typeerror();}
 	|
+	expr '%' expr	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_MOD,$1, $3,NULL,NULL,TYPE_INT, 0); else typeerror();}
+	|
 	'(' expr ')' 	{ $$ = $2; }
 	|
 	'-' expr %prec UMINUS { $$ = make_node(CH_UMINUS, $2, NULL,NULL,NULL,TYPE_INT,0); }
@@ -134,6 +139,13 @@ int main(void)
 	return 0;
 }
 
+int execute(node* nptr)
+{
+	initialiseCodeGen();
+	codegen(nptr);
+	completeCodeGen();
+	return 0;
+}
 
 int typeerror()
 {

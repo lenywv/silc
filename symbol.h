@@ -1,11 +1,12 @@
 #ifndef _SYMBOL_H
 #define _SYMBOL_H
+int bind_base;
 typedef struct symbolnode
 {
 		char *name;
 		int type;
 		int size; 
-		int *binding;
+		int *binding,bind;
 		struct symbolnode *next;
 }symnode;
 

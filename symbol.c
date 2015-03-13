@@ -5,6 +5,7 @@
 #include "types.h"
 symnode* construct()
 {
+		bind_base=0;
 		symnode *root;
 		root=(symnode *)malloc(sizeof(symnode));
 		root->name="-1";
@@ -44,8 +45,10 @@ symnode* makeSymEntry(char *n,symnode *table,int v,int t)
 				new->name=n;
 				new->size=v;
 				new->type=t;
+				new->bind=bind_base;
 				new->next=table->next;
 				table->next=new;
+				bind_base+=v;
 				return table;
 			}
 			else
