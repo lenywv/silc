@@ -4,12 +4,19 @@
 int bind_base;
 typedef struct symbolnode
 {
-		char *name;
-		int type;
-		int size; 
-		int *binding,bind;
-		struct symbolnode *next;
+	char *name;
+	int type;
+	int size; 
+	int *binding,bind;
+	struct symbolnode *next;
 }symnode;
+
+typedef struct argumentnode
+{
+	char *name;
+	int type;
+	struct argumentnode *next;
+}argnode;
 
 #include "operators.h"
 #include "types.h"

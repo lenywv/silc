@@ -5,7 +5,7 @@ enddecl
 a=read();
 b=read();
 c=read();
-if(a>b)
+if(a+b)
 	if(c>a)
 		write(c);
 	else

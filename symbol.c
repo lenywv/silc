@@ -54,3 +54,12 @@ symnode* makeSymEntry(char *n,symnode *table,int v,int t)
 				return NULL;
 			}	
 }
+
+argnode* makeArgNode(int type,char* name)
+{
+	argnode *aptr=(argnode*)malloc(sizeof(argnode));
+	aptr->name=name;
+	aptr->type=type;
+	aptr->next=NULL;
+	return aptr;
+}

@@ -17,13 +17,15 @@ symnode *root;
 		int i;
 		char *name;
 		struct treenode *nptr;
+//		argnode *aptr;
 };
 
 %token CONSTANT IDENT END
 %token INTEGER BOOLEAN DECL ENDDECL
 %token IF ELSE PRINT WHILE READ ENDIF WRITE TRUE FALSE DO ENDWHILE
 
-%type <nptr> expr statement statementlist CONSTANT
+%type <nptr> expr statement statementlist CONSTANT condition
+//%type <aptr> arg arglist
 %type <i> RELOP LOGOP
 %type <name> IDENT
 %left LOGOP
@@ -57,9 +59,9 @@ arglist:
 	;
 
 arg:
-	vartype IDENT
+	vartype IDENT { $$=makeArgNode(type,$2)};
 	;
-*/	
+*/
 declaration:
 	vartype varlist
 	/*|
@@ -91,11 +93,11 @@ statement:
 	|
 	WRITE '(' expr ')' 		{if(isInt($3))						$$=node_write($3);}
 	|
-	IF '(' expr ')' statementlist ENDIF 				{if(isBool($3))	$$=node_if($3,$5);}
+	IF '(' condition ')' statementlist ENDIF 						{	$$=node_if($3,$5);}
 	|
-	IF '(' expr ')' statementlist ELSE statementlist ENDIF 	{if(isBool($3))	$$=node_ifElse($3,$5,$7);}
+	IF '(' condition ')' statementlist ELSE statementlist ENDIF 		{	$$=node_ifElse($3,$5,$7);}
 	|
-	WHILE '(' expr ')' DO statementlist ENDWHILE 			{if(isBool($3))	$$=node_while($3,$6);}
+	WHILE '(' condition ')' DO statementlist ENDWHILE 				{	$$=node_while($3,$6);}
 	;
 
 statementlist:
@@ -104,6 +106,10 @@ statementlist:
 	statementlist statement ';' {$$=node_stmt($1,$2);}
 	;
 	
+	
+condition:
+	expr {if(isBool($1)) $$=$1;}
+	;
 	
 expr: 
 	CONSTANT			{ $$ = $1; }
