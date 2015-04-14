@@ -828,121 +828,121 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 21 "silc.l"
-{	yylval.i=CH_LOGAND; return LOGOP; }
+#line 22 "silc.l"
+{	yylval.i=CH_LOGAND;	return LOGOP; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 22 "silc.l"
+#line 23 "silc.l"
 {	yylval.i=CH_LOGOR;	return LOGOP; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 24 "silc.l"
+#line 25 "silc.l"
 return WHILE;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 25 "silc.l"
+#line 26 "silc.l"
 return DO;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 26 "silc.l"
+#line 27 "silc.l"
 return ENDWHILE;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 27 "silc.l"
+#line 28 "silc.l"
 return IF;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 28 "silc.l"
+#line 29 "silc.l"
 return ELSE;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 29 "silc.l"
+#line 30 "silc.l"
 return ENDIF;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 30 "silc.l"
+#line 31 "silc.l"
 return PRINT;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 31 "silc.l"
+#line 32 "silc.l"
 return READ;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 32 "silc.l"
+#line 33 "silc.l"
 return WRITE;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 33 "silc.l"
+#line 34 "silc.l"
 return DECL;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 34 "silc.l"
+#line 35 "silc.l"
 return TRUE;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 35 "silc.l"
+#line 36 "silc.l"
 return FALSE;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 36 "silc.l"
+#line 37 "silc.l"
 return ENDDECL;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 37 "silc.l"
+#line 38 "silc.l"
 return INTEGER;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 38 "silc.l"
+#line 39 "silc.l"
 return BOOLEAN;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 39 "silc.l"
+#line 40 "silc.l"
 return END;
 	YY_BREAK
 /* integers constant*/
 case 27:
 YY_RULE_SETUP
-#line 41 "silc.l"
-{ yylval.nptr = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_INT,atoi(yytext));	return CONSTANT; }
+#line 42 "silc.l"
+{ yylval.nptr = node_const(TYPE_INT,atoi(yytext));	return CONSTANT; }
 	YY_BREAK
 /* variables */
 case 28:
 YY_RULE_SETUP
-#line 44 "silc.l"
+#line 45 "silc.l"
 {yylval.name=strdup(yytext);return IDENT; }
 	YY_BREAK
 /* operators */
 case 29:
 YY_RULE_SETUP
-#line 48 "silc.l"
+#line 49 "silc.l"
 { return *yytext;}
 	YY_BREAK
 /* others */
 case 30:
 YY_RULE_SETUP
-#line 51 "silc.l"
+#line 52 "silc.l"
 yyerror("Invalid character");
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 53 "silc.l"
+#line 54 "silc.l"
 ECHO;
 	YY_BREAK
 #line 949 "lex.yy.c"
@@ -1943,7 +1943,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 53 "silc.l"
+#line 54 "silc.l"
 
 
 

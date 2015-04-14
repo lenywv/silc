@@ -64,11 +64,10 @@
 /* Copy the first part of user declarations.  */
 #line 1 "silc.y" /* yacc.c:339  */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "operators.h"
 #include "symbol.h"
 #include "types.h"
+#include "tree.h"
 #include "evaluate.h"
 
 int yytext(void);
@@ -77,7 +76,7 @@ int type;
 extern int lineno;
 symnode *root;
 
-#line 81 "y.tab.c" /* yacc.c:339  */
+#line 80 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -163,13 +162,13 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 17 "silc.y" /* yacc.c:355  */
+#line 16 "silc.y" /* yacc.c:355  */
 
 		int i;
 		char *name;
 		struct treenode *nptr;
 
-#line 173 "y.tab.c" /* yacc.c:355  */
+#line 172 "y.tab.c" /* yacc.c:355  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -184,7 +183,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 188 "y.tab.c" /* yacc.c:358  */
+#line 187 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -483,10 +482,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    38,    38,    40,    41,    45,    49,    51,    55,    59,
-      61,    65,    67,    71,    73,    77,    79,    81,    83,    85,
-      87,    91,    93,    98,   100,   102,   104,   106,   108,   110,
-     112,   114,   116,   118,   120,   122,   124,   126
+       0,    37,    37,    39,    40,    44,    48,    50,    64,    70,
+      72,    76,    78,    82,    84,    88,    90,    92,    94,    96,
+      98,   102,   104,   109,   111,   113,   115,   117,   119,   121,
+     123,   125,   127,   129,   131,   133,   135,   137
 };
 #endif
 
@@ -1324,181 +1323,181 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 38 "silc.y" /* yacc.c:1646  */
+#line 37 "silc.y" /* yacc.c:1646  */
     { execute((yyvsp[-1].nptr)); exit(1);}
-#line 1330 "y.tab.c" /* yacc.c:1646  */
+#line 1329 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 40 "silc.y" /* yacc.c:1646  */
+#line 39 "silc.y" /* yacc.c:1646  */
     { execute((yyvsp[-1].nptr)); exit(1);}
-#line 1336 "y.tab.c" /* yacc.c:1646  */
+#line 1335 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 59 "silc.y" /* yacc.c:1646  */
+#line 70 "silc.y" /* yacc.c:1646  */
     {type=TYPE_INT;}
-#line 1342 "y.tab.c" /* yacc.c:1646  */
+#line 1341 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 61 "silc.y" /* yacc.c:1646  */
+#line 72 "silc.y" /* yacc.c:1646  */
     {type=TYPE_BOOL;}
-#line 1348 "y.tab.c" /* yacc.c:1646  */
+#line 1347 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 71 "silc.y" /* yacc.c:1646  */
+#line 82 "silc.y" /* yacc.c:1646  */
     {makeSymEntry((yyvsp[0].name),root,1,type);}
-#line 1354 "y.tab.c" /* yacc.c:1646  */
+#line 1353 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 73 "silc.y" /* yacc.c:1646  */
-    {makeSymEntry((yyvsp[-3].name),root,(yyvsp[-1].nptr)->value,type);}
-#line 1360 "y.tab.c" /* yacc.c:1646  */
+#line 84 "silc.y" /* yacc.c:1646  */
+    {if((yyvsp[-1].nptr)->value>0) makeSymEntry((yyvsp[-3].name),root,(yyvsp[-1].nptr)->value,type); else arraydeclerror();}
+#line 1359 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 77 "silc.y" /* yacc.c:1646  */
-    {if(isType((yyvsp[0].nptr),getVarType((yyvsp[-2].name),root)))			(yyval.nptr)=make_node(CH_ASSIGN,NULL,(yyvsp[0].nptr),NULL,(yyvsp[-2].name),TYPE_VOID,0);	else typeerror2(getVarType((yyvsp[-2].name),root),getType((yyvsp[0].nptr)));}
-#line 1366 "y.tab.c" /* yacc.c:1646  */
+#line 88 "silc.y" /* yacc.c:1646  */
+    {if(isType((yyvsp[0].nptr),getVarType((yyvsp[-2].name),root)))			(yyval.nptr)=node_assign((yyvsp[0].nptr),(yyvsp[-2].name));}
+#line 1365 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 79 "silc.y" /* yacc.c:1646  */
-    {if(isType((yyvsp[0].nptr),getVarType((yyvsp[-5].name),root))&&isInt((yyvsp[-3].nptr)))	(yyval.nptr)=make_node(CH_ASSIGNARR,(yyvsp[-3].nptr),(yyvsp[0].nptr),NULL,(yyvsp[-5].name),TYPE_VOID,0); else 	typeerror();}
-#line 1372 "y.tab.c" /* yacc.c:1646  */
+#line 90 "silc.y" /* yacc.c:1646  */
+    {if(isType((yyvsp[0].nptr),getVarType((yyvsp[-5].name),root))&&isInt((yyvsp[-3].nptr)))	(yyval.nptr)=node_assignArray((yyvsp[-3].nptr),(yyvsp[0].nptr),(yyvsp[-5].name));}
+#line 1371 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 81 "silc.y" /* yacc.c:1646  */
-    {if(isInt((yyvsp[-1].nptr)))					(yyval.nptr)=make_node(CH_WRITE,(yyvsp[-1].nptr),NULL,NULL,NULL,TYPE_VOID,0); else  typeerror();}
-#line 1378 "y.tab.c" /* yacc.c:1646  */
+#line 92 "silc.y" /* yacc.c:1646  */
+    {if(isInt((yyvsp[-1].nptr)))						(yyval.nptr)=node_write((yyvsp[-1].nptr));}
+#line 1377 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 83 "silc.y" /* yacc.c:1646  */
-    {if(isBool((yyvsp[-3].nptr)))	(yyval.nptr)=make_node(CH_IF,(yyvsp[-3].nptr),(yyvsp[-1].nptr),NULL,NULL,TYPE_VOID,0);	else typeerror();}
-#line 1384 "y.tab.c" /* yacc.c:1646  */
+#line 94 "silc.y" /* yacc.c:1646  */
+    {if(isBool((yyvsp[-3].nptr)))	(yyval.nptr)=node_if((yyvsp[-3].nptr),(yyvsp[-1].nptr));}
+#line 1383 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 85 "silc.y" /* yacc.c:1646  */
-    {if(isBool((yyvsp[-5].nptr)))	(yyval.nptr)=make_node(CH_IFELSE,(yyvsp[-5].nptr),(yyvsp[-3].nptr),(yyvsp[-1].nptr),NULL,TYPE_VOID,0);	else typeerror();}
-#line 1390 "y.tab.c" /* yacc.c:1646  */
+#line 96 "silc.y" /* yacc.c:1646  */
+    {if(isBool((yyvsp[-5].nptr)))	(yyval.nptr)=node_ifElse((yyvsp[-5].nptr),(yyvsp[-3].nptr),(yyvsp[-1].nptr));}
+#line 1389 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 87 "silc.y" /* yacc.c:1646  */
-    {if(isBool((yyvsp[-4].nptr)))	(yyval.nptr)=make_node(CH_WHILE,(yyvsp[-4].nptr),(yyvsp[-1].nptr),NULL,NULL,TYPE_VOID,0);	else typeerror(); }
-#line 1396 "y.tab.c" /* yacc.c:1646  */
+#line 98 "silc.y" /* yacc.c:1646  */
+    {if(isBool((yyvsp[-4].nptr)))	(yyval.nptr)=node_while((yyvsp[-4].nptr),(yyvsp[-1].nptr));}
+#line 1395 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 91 "silc.y" /* yacc.c:1646  */
+#line 102 "silc.y" /* yacc.c:1646  */
     {(yyval.nptr)=(yyvsp[-1].nptr);}
-#line 1402 "y.tab.c" /* yacc.c:1646  */
+#line 1401 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 93 "silc.y" /* yacc.c:1646  */
-    {(yyval.nptr)=make_node(CH_STMNT,(yyvsp[-2].nptr),(yyvsp[-1].nptr),NULL,NULL,TYPE_VOID,0);}
-#line 1408 "y.tab.c" /* yacc.c:1646  */
+#line 104 "silc.y" /* yacc.c:1646  */
+    {(yyval.nptr)=node_stmt((yyvsp[-2].nptr),(yyvsp[-1].nptr));}
+#line 1407 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 98 "silc.y" /* yacc.c:1646  */
+#line 109 "silc.y" /* yacc.c:1646  */
     { (yyval.nptr) = (yyvsp[0].nptr); }
-#line 1414 "y.tab.c" /* yacc.c:1646  */
+#line 1413 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 100 "silc.y" /* yacc.c:1646  */
-    { (yyval.nptr) =make_node(CH_IDENT,NULL,NULL,NULL,(yyvsp[0].name),getVarType((yyvsp[0].name),root),0);}
-#line 1420 "y.tab.c" /* yacc.c:1646  */
+#line 111 "silc.y" /* yacc.c:1646  */
+    { (yyval.nptr) = node_var((yyvsp[0].name));}
+#line 1419 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 102 "silc.y" /* yacc.c:1646  */
-    { if(isInt((yyvsp[-1].nptr)))	(yyval.nptr) =make_node(CH_IDENTARR,(yyvsp[-1].nptr),NULL,NULL,(yyvsp[-3].name),getVarType((yyvsp[-3].name),root),0); else typeerror();}
-#line 1426 "y.tab.c" /* yacc.c:1646  */
+#line 113 "silc.y" /* yacc.c:1646  */
+    { if(isInt((yyvsp[-1].nptr)))	(yyval.nptr) = node_derefArray((yyvsp[-3].name),(yyvsp[-1].nptr));}
+#line 1425 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 104 "silc.y" /* yacc.c:1646  */
-    { (yyval.nptr) = make_node(CH_READ,NULL,NULL,NULL,NULL,TYPE_INT,0); }
-#line 1432 "y.tab.c" /* yacc.c:1646  */
+#line 115 "silc.y" /* yacc.c:1646  */
+    { (yyval.nptr) = node_read(); }
+#line 1431 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 106 "silc.y" /* yacc.c:1646  */
-    { if(isInt((yyvsp[-2].nptr))&&isInt((yyvsp[0].nptr)))	(yyval.nptr) = make_node(CH_ADD,(yyvsp[-2].nptr), (yyvsp[0].nptr),NULL,NULL,TYPE_INT, 0); else typeerror();}
-#line 1438 "y.tab.c" /* yacc.c:1646  */
+#line 117 "silc.y" /* yacc.c:1646  */
+    { typeCheckArith((yyvsp[-2].nptr),(yyvsp[0].nptr));	(yyval.nptr) = node_arithmetic(CH_ADD,(yyvsp[-2].nptr), (yyvsp[0].nptr));}
+#line 1437 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 108 "silc.y" /* yacc.c:1646  */
-    { if(isInt((yyvsp[-2].nptr))&&isInt((yyvsp[0].nptr)))	(yyval.nptr) = make_node(CH_SUB,(yyvsp[-2].nptr), (yyvsp[0].nptr),NULL,NULL,TYPE_INT, 0); else typeerror();}
-#line 1444 "y.tab.c" /* yacc.c:1646  */
+#line 119 "silc.y" /* yacc.c:1646  */
+    { typeCheckArith((yyvsp[-2].nptr),(yyvsp[0].nptr));	(yyval.nptr) = node_arithmetic(CH_SUB,(yyvsp[-2].nptr), (yyvsp[0].nptr));}
+#line 1443 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 110 "silc.y" /* yacc.c:1646  */
-    { if(isInt((yyvsp[-2].nptr))&&isInt((yyvsp[0].nptr)))	(yyval.nptr) = make_node(CH_MUL,(yyvsp[-2].nptr), (yyvsp[0].nptr),NULL,NULL,TYPE_INT, 0); else typeerror();}
-#line 1450 "y.tab.c" /* yacc.c:1646  */
+#line 121 "silc.y" /* yacc.c:1646  */
+    { typeCheckArith((yyvsp[-2].nptr),(yyvsp[0].nptr));	(yyval.nptr) = node_arithmetic(CH_MUL,(yyvsp[-2].nptr), (yyvsp[0].nptr));}
+#line 1449 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 112 "silc.y" /* yacc.c:1646  */
-    { if(isInt((yyvsp[-2].nptr))&&isInt((yyvsp[0].nptr)))	(yyval.nptr) = make_node(CH_DIV,(yyvsp[-2].nptr), (yyvsp[0].nptr),NULL,NULL,TYPE_INT, 0); else typeerror();}
-#line 1456 "y.tab.c" /* yacc.c:1646  */
+#line 123 "silc.y" /* yacc.c:1646  */
+    { typeCheckArith((yyvsp[-2].nptr),(yyvsp[0].nptr));	(yyval.nptr) = node_arithmetic(CH_DIV,(yyvsp[-2].nptr), (yyvsp[0].nptr));}
+#line 1455 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 114 "silc.y" /* yacc.c:1646  */
-    { if(isInt((yyvsp[-2].nptr))&&isInt((yyvsp[0].nptr)))	(yyval.nptr) = make_node(CH_MOD,(yyvsp[-2].nptr), (yyvsp[0].nptr),NULL,NULL,TYPE_INT, 0); else typeerror();}
-#line 1462 "y.tab.c" /* yacc.c:1646  */
+#line 125 "silc.y" /* yacc.c:1646  */
+    { typeCheckArith((yyvsp[-2].nptr),(yyvsp[0].nptr));	(yyval.nptr) = node_arithmetic(CH_MOD,(yyvsp[-2].nptr), (yyvsp[0].nptr));}
+#line 1461 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 116 "silc.y" /* yacc.c:1646  */
+#line 127 "silc.y" /* yacc.c:1646  */
     { (yyval.nptr) = (yyvsp[-1].nptr); }
-#line 1468 "y.tab.c" /* yacc.c:1646  */
+#line 1467 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 118 "silc.y" /* yacc.c:1646  */
-    { (yyval.nptr) = make_node(CH_UMINUS, (yyvsp[0].nptr), NULL,NULL,NULL,TYPE_INT,0); }
-#line 1474 "y.tab.c" /* yacc.c:1646  */
+#line 129 "silc.y" /* yacc.c:1646  */
+    { if(isInt((yyvsp[0].nptr)))	(yyval.nptr) = node_arithmetic(CH_UMINUS, (yyvsp[0].nptr),NULL);}
+#line 1473 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 120 "silc.y" /* yacc.c:1646  */
-    { (yyval.nptr) = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_BOOL,1);}
-#line 1480 "y.tab.c" /* yacc.c:1646  */
+#line 131 "silc.y" /* yacc.c:1646  */
+    { (yyval.nptr) = node_const(TYPE_BOOL,1);}
+#line 1479 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 122 "silc.y" /* yacc.c:1646  */
-    { (yyval.nptr) = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_BOOL,0);}
-#line 1486 "y.tab.c" /* yacc.c:1646  */
+#line 133 "silc.y" /* yacc.c:1646  */
+    { (yyval.nptr) = node_const(TYPE_BOOL,1);}
+#line 1485 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 124 "silc.y" /* yacc.c:1646  */
-    { if(isInt((yyvsp[-2].nptr))&&isInt((yyvsp[0].nptr)))	(yyval.nptr) = make_node(CH_RELOP,(yyvsp[-2].nptr),(yyvsp[0].nptr),NULL,NULL,TYPE_BOOL,(yyvsp[-1].i));	else typeerror3(TYPE_INT,getType((yyvsp[-2].nptr)),getType((yyvsp[-2].nptr)));}
-#line 1492 "y.tab.c" /* yacc.c:1646  */
+#line 135 "silc.y" /* yacc.c:1646  */
+    { typeCheckRelop((yyvsp[-2].nptr),(yyvsp[0].nptr));	(yyval.nptr) = node_relOp((yyvsp[-2].nptr),(yyvsp[0].nptr),(yyvsp[-1].i));	}
+#line 1491 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 126 "silc.y" /* yacc.c:1646  */
-    { if(isBool((yyvsp[-2].nptr))&&isBool((yyvsp[0].nptr)))	(yyval.nptr) = make_node(CH_LOGOP,(yyvsp[-2].nptr),(yyvsp[0].nptr),NULL,NULL,TYPE_BOOL,(yyvsp[-1].i));	else typeerror();}
-#line 1498 "y.tab.c" /* yacc.c:1646  */
+#line 137 "silc.y" /* yacc.c:1646  */
+    { typeCheckLogop((yyvsp[-2].nptr),(yyvsp[0].nptr));	(yyval.nptr) = node_logOp((yyvsp[-2].nptr),(yyvsp[0].nptr),(yyvsp[-1].i));	}
+#line 1497 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1502 "y.tab.c" /* yacc.c:1646  */
+#line 1501 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1726,7 +1725,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 128 "silc.y" /* yacc.c:1906  */
+#line 139 "silc.y" /* yacc.c:1906  */
 
 
 void yyerror (char *s)
@@ -1749,26 +1748,10 @@ int execute(node* nptr)
 	return 0;
 }
 
-int typeerror()
-{
-	char buf[30];
-	sprintf(buf,"Type error at line %d",lineno);			
-	yyerror(buf);
-	exit(1);
-}
-
-int typeerror2(int type1,int type2)
+int arraydeclerror()
 {
 	char buf[50];
-	sprintf(buf,"Type error at line %d expected type %s found %s",lineno,type1==TYPE_INT?"integer":"boolean",type2==TYPE_INT?"integer":"boolean");			
+	sprintf(buf,"Error ar line %d \nSize of array should be greater than zero",lineno);			
 	yyerror(buf);
-	exit(1);
 }
 
-int typeerror3(int type1,int type2,int type3)
-{
-	char buf[50];
-	sprintf(buf,"Type error at line %d expected type %s found %s and %s",lineno,type1==TYPE_INT?"integer":"boolean",type2==TYPE_INT?"integer":"boolean",type3==TYPE_INT?"integer":"boolean");			
-	yyerror(buf);
-	exit(1);
-}

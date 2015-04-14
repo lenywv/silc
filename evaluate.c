@@ -1,8 +1,4 @@
 #include "evaluate.h"
-#include "operators.h"
-#include "types.h"
-#include "symbol.h"
-#include <stdio.h>
 
 extern symnode *root;
 int evaluate(node *ptr)

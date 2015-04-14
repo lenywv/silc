@@ -1,9 +1,22 @@
 decl
-boolean a;
+integer a,b,c;
+boolean d;
 enddecl
-a=(3==3);
-if(a)
-write(8);
+a=read();
+b=read();
+c=read();
+if(a>b)
+	if(c>a)
+		write(c);
+	else
+		write(a);
+	endif;
+else
+	if(c>b)
+		write(c);
+	else
+		write(b);
+	endif;
 endif;
 end
 

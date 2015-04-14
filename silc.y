@@ -1,9 +1,8 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
 #include "operators.h"
 #include "symbol.h"
 #include "types.h"
+#include "tree.h"
 #include "evaluate.h"
 
 int yytext(void);
@@ -50,9 +49,21 @@ declist:
 	|
 	declaration ';'
 	;
+/*
+arglist:
+	agrlist ',' arg
+	|
+	arg
+	;
 
+arg:
+	vartype IDENT
+	;
+*/	
 declaration:
-	vartype varlist 
+	vartype varlist
+	/*|
+	vartype IDENT '(' arglist ')' {makeSymEntry($2,root,0,type,$4);}*/
 	;
 
 vartype:
@@ -70,60 +81,60 @@ varlist:
 variable:
 	IDENT {makeSymEntry($1,root,1,type);}
 	|
-	IDENT '[' CONSTANT ']' {makeSymEntry($1,root,$3->value,type);}
+	IDENT '[' CONSTANT ']' {if($3->value>0) makeSymEntry($1,root,$3->value,type); else arraydeclerror();}
 	;
 
 statement:
-	IDENT '=' expr 			{if(isType($3,getVarType($1,root)))			$$=make_node(CH_ASSIGN,NULL,$3,NULL,$1,TYPE_VOID,0);	else typeerror2(getVarType($1,root),getType($3));}
+	IDENT '=' expr 			{if(isType($3,getVarType($1,root)))			$$=node_assign($3,$1);}
 	|
-	IDENT '[' expr ']' '=' expr 	{if(isType($6,getVarType($1,root))&&isInt($3))	$$=make_node(CH_ASSIGNARR,$3,$6,NULL,$1,TYPE_VOID,0); else 	typeerror();}
+	IDENT '[' expr ']' '=' expr 	{if(isType($6,getVarType($1,root))&&isInt($3))	$$=node_assignArray($3,$6,$1);}
 	|
-	WRITE '(' expr ')' 		{if(isInt($3))					$$=make_node(CH_WRITE,$3,NULL,NULL,NULL,TYPE_VOID,0); else  typeerror();}
+	WRITE '(' expr ')' 		{if(isInt($3))						$$=node_write($3);}
 	|
-	IF '(' expr ')' statementlist ENDIF 				{if(isBool($3))	$$=make_node(CH_IF,$3,$5,NULL,NULL,TYPE_VOID,0);	else typeerror();}
+	IF '(' expr ')' statementlist ENDIF 				{if(isBool($3))	$$=node_if($3,$5);}
 	|
-	IF '(' expr ')' statementlist ELSE statementlist ENDIF 	{if(isBool($3))	$$=make_node(CH_IFELSE,$3,$5,$7,NULL,TYPE_VOID,0);	else typeerror();}
+	IF '(' expr ')' statementlist ELSE statementlist ENDIF 	{if(isBool($3))	$$=node_ifElse($3,$5,$7);}
 	|
-	WHILE '(' expr ')' DO statementlist ENDWHILE 			{if(isBool($3))	$$=make_node(CH_WHILE,$3,$6,NULL,NULL,TYPE_VOID,0);	else typeerror(); }
+	WHILE '(' expr ')' DO statementlist ENDWHILE 			{if(isBool($3))	$$=node_while($3,$6);}
 	;
 
 statementlist:
 	statement ';' {$$=$1;}
 	|
-	statementlist statement ';' {$$=make_node(CH_STMNT,$1,$2,NULL,NULL,TYPE_VOID,0);}
+	statementlist statement ';' {$$=node_stmt($1,$2);}
 	;
 	
 	
 expr: 
-	CONSTANT	{ $$ = $1; }
+	CONSTANT			{ $$ = $1; }
 	|
-	IDENT		{ $$ =make_node(CH_IDENT,NULL,NULL,NULL,$1,getVarType($1,root),0);}
+	IDENT				{ $$ = node_var($1);}
 	|
-	IDENT '[' expr ']'	{ if(isInt($3))	$$ =make_node(CH_IDENTARR,$3,NULL,NULL,$1,getVarType($1,root),0); else typeerror();}
+	IDENT '[' expr ']'	{ if(isInt($3))	$$ = node_derefArray($1,$3);}
 	|
-	READ '(' ')'	{ $$ = make_node(CH_READ,NULL,NULL,NULL,NULL,TYPE_INT,0); }
+	READ '(' ')'		{ $$ = node_read(); }
 	|
-	expr '+' expr	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_ADD,$1, $3,NULL,NULL,TYPE_INT, 0); else typeerror();}
+	expr '+' expr		{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_ADD,$1, $3);}
 	|
-	expr '-' expr	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_SUB,$1, $3,NULL,NULL,TYPE_INT, 0); else typeerror();}
+	expr '-' expr		{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_SUB,$1, $3);}
 	|
-	expr '*' expr	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_MUL,$1, $3,NULL,NULL,TYPE_INT, 0); else typeerror();}
+	expr '*' expr		{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_MUL,$1, $3);}
 	|
-	expr '/' expr	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_DIV,$1, $3,NULL,NULL,TYPE_INT, 0); else typeerror();}
+	expr '/' expr		{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_DIV,$1, $3);}
 	|
-	expr '%' expr	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_MOD,$1, $3,NULL,NULL,TYPE_INT, 0); else typeerror();}
+	expr '%' expr		{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_MOD,$1, $3);}
 	|
-	'(' expr ')' 	{ $$ = $2; }
+	'(' expr ')' 		{ $$ = $2; }
 	|
-	'-' expr %prec UMINUS { $$ = make_node(CH_UMINUS, $2, NULL,NULL,NULL,TYPE_INT,0); }
+	'-' expr %prec UMINUS	{ if(isInt($2))	$$ = node_arithmetic(CH_UMINUS, $2,NULL);}
 	|
-	TRUE			{ $$ = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_BOOL,1);}
+	TRUE				{ $$ = node_const(TYPE_BOOL,1);}
 	|
-	FALSE			{ $$ = make_node(CH_CONST,NULL,NULL,NULL,NULL,TYPE_BOOL,0);}
+	FALSE				{ $$ = node_const(TYPE_BOOL,1);}
 	|
-	expr RELOP expr  	{ if(isInt($1)&&isInt($3))	$$ = make_node(CH_RELOP,$1,$3,NULL,NULL,TYPE_BOOL,$2);	else typeerror3(TYPE_INT,getType($1),getType($1));}
+	expr RELOP expr 	 	{ typeCheckRelop($1,$3);	$$ = node_relOp($1,$3,$2);	}
 	|
-	expr LOGOP expr 	{ if(isBool($1)&&isBool($3))	$$ = make_node(CH_LOGOP,$1,$3,NULL,NULL,TYPE_BOOL,$2);	else typeerror();}
+	expr LOGOP expr 		{ typeCheckLogop($1,$3);	$$ = node_logOp($1,$3,$2);	}
 	;
 %%
 
@@ -147,26 +158,10 @@ int execute(node* nptr)
 	return 0;
 }
 
-int typeerror()
-{
-	char buf[30];
-	sprintf(buf,"Type error at line %d",lineno);			
-	yyerror(buf);
-	exit(1);
-}
-
-int typeerror2(int type1,int type2)
+int arraydeclerror()
 {
 	char buf[50];
-	sprintf(buf,"Type error at line %d expected type %s found %s",lineno,type1==TYPE_INT?"integer":"boolean",type2==TYPE_INT?"integer":"boolean");			
+	sprintf(buf,"Error ar line %d \nSize of array should be greater than zero",lineno);			
 	yyerror(buf);
-	exit(1);
 }
 
-int typeerror3(int type1,int type2,int type3)
-{
-	char buf[50];
-	sprintf(buf,"Type error at line %d expected type %s found %s and %s",lineno,type1==TYPE_INT?"integer":"boolean",type2==TYPE_INT?"integer":"boolean",type3==TYPE_INT?"integer":"boolean");			
-	yyerror(buf);
-	exit(1);
-}

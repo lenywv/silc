@@ -1,5 +1,6 @@
 #ifndef _SYMBOL_H
 #define _SYMBOL_H
+
 int bind_base;
 typedef struct symbolnode
 {
@@ -9,6 +10,9 @@ typedef struct symbolnode
 		int *binding,bind;
 		struct symbolnode *next;
 }symnode;
+
+#include "operators.h"
+#include "types.h"
 
 symnode* construct();
 

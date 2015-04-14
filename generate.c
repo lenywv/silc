@@ -1,7 +1,6 @@
 #include "operators.h"
 #include "types.h"
 #include "symbol.h"
-#include <stdio.h>
 extern symnode *root;
 static int reg[8];
 static int labelcount;
@@ -69,8 +68,9 @@ int codegen(node *ptr)
 		case CH_IDENT:
 			symentry=lookup(ptr->name,root);
 			reg1=getreg();
-			printf("MOV R%d, %d\n",reg1,symentry->bind);
-			printf("MOV R%d, [R%d]\n",reg1,reg1);
+			/*printf("MOV R%d, %d\n",reg1,symentry->bind);
+			printf("MOV R%d, [R%d]\n",reg1,reg1);*/
+			printf("MOV R%d, [%d]\n",reg1,symentry->bind);
 			return reg1;
 		case CH_IDENTARR:
 			symentry=lookup(ptr->name,root);

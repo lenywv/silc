@@ -1,8 +1,5 @@
 #include "symbol.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include "operators.h"
-#include "types.h"
+
 symnode* construct()
 {
 		bind_base=0;

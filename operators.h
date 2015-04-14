@@ -1,6 +1,9 @@
 #ifndef _OPERATOR_H
 #define _OPERATOR_H
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #define CH_ADD '+'
 #define CH_SUB '-'
 #define CH_DIV '/'
@@ -30,12 +33,4 @@
 #define CH_LOGOR	269
 #define CH_LOGOP	270
 
-typedef struct treenode
-{
-	int op,type;
-	char *name;
-	struct treenode *left,*right,*middle;
-	int value;
-}node;
-node* make_node(int op,node *left,node *right,node *middle,char *name,int type,int value);
 #endif
