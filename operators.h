@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <signal.h>
 
 #define CH_ADD '+'
 #define CH_SUB '-'
@@ -32,5 +33,9 @@
 #define CH_LOGAND	268
 #define CH_LOGOR	269
 #define CH_LOGOP	270
+#define CH_FUNC	271
+#define CH_MAINFUNC	272
+#define CH_ADDR	273
+#define CH_FUNCCALL	274
 
 #endif

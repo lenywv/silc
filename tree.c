@@ -15,6 +15,31 @@ node* make_node(int op,node *left,node *right,node *middle,char *name,int type,i
 		ptr->name=NULL;
 	return ptr;
 }
+node* node_func(char *name,node* body,node* rtrn)
+{
+	return make_node(CH_FUNC,body,rtrn,NULL,name,TYPE_VOID,0);
+}
+
+node* node_mainfunc(node* body)
+{
+	return make_node(CH_MAINFUNC,body,NULL,NULL,NULL,TYPE_VOID,0);
+}
+
+node* node_addressof(char *name)
+{
+	return make_node(CH_ADDR,NULL,NULL,NULL,name,getVarType(name,root),0);
+}
+
+node* node_actualarglist(node *list,node *arg)
+{
+	list->right=arg;
+	return list;
+}
+
+node* node_funccall(char *name,node *actarg)
+{
+	return make_node(CH_FUNCCALL,actarg,NULL,NULL,name,getVarType(name,root),0);
+}
 
 node* node_arithmetic(int op,node *left,node *right)
 {

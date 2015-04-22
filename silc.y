@@ -4,12 +4,14 @@
 #include "types.h"
 #include "tree.h"
 #include "evaluate.h"
+#include "actions.h"
 
 int yytext(void);
 void yyerror(char *);
 int type;
 extern int lineno;
-symnode *root;
+extern Lbind_base;
+symnode *root,*Lroot;
 %}
 
 %union
@@ -17,17 +19,17 @@ symnode *root;
 		int i;
 		char *name;
 		struct treenode *nptr;
-//		argnode *aptr;
+		struct argumentnode *aptr;
 };
 
-%token CONSTANT IDENT END
-%token INTEGER BOOLEAN DECL ENDDECL
+%token CONSTANT IDENT END MAIN
+%token INTEGER BOOLEAN DECL ENDDECL RETURN
 %token IF ELSE PRINT WHILE READ ENDIF WRITE TRUE FALSE DO ENDWHILE
 
-%type <nptr> expr statement statementlist CONSTANT condition
-//%type <aptr> arg arglist
+%type <nptr> expr statement statementlist CONSTANT condition functiondefs function mainfunction returnstmt actualarglist nonemptyactualarglist
+%type <aptr> arg arglist
 %type <i> RELOP LOGOP
-%type <name> IDENT
+%type <name> IDENT functionheader
 %left LOGOP
 %left RELOP 
 %left '+' '-'
@@ -36,12 +38,11 @@ symnode *root;
 %%
 
 program:
-	declarations statementlist  END { execute($2); exit(1);}
+	declarations functiondefs mainfunction	{ execute($3); exit(1);}
 	|
-	statementlist  END { execute($1); exit(1);}
-	|
+	statementlist  END	{ execute($1); exit(1);}
 	;
-	
+
 declarations:
 	DECL declist ENDDECL 
 	;
@@ -51,21 +52,11 @@ declist:
 	|
 	declaration ';'
 	;
-/*
-arglist:
-	agrlist ',' arg
-	|
-	arg
-	;
-
-arg:
-	vartype IDENT { $$=makeArgNode(type,$2)};
-	;
-*/
+	
 declaration:
 	vartype varlist
-	/*|
-	vartype IDENT '(' arglist ')' {makeSymEntry($2,root,0,type,$4);}*/
+	|
+	vartype IDENT '(' arglist ')' {makeSymEntry($2,root,0,type,$4);}
 	;
 
 vartype:
@@ -81,10 +72,64 @@ varlist:
 	;
 
 variable:
-	IDENT {makeSymEntry($1,root,1,type);}
+	IDENT {makeSymEntry($1,root,1,type,NULL);}
 	|
-	IDENT '[' CONSTANT ']' {if($3->value>0) makeSymEntry($1,root,$3->value,type); else arraydeclerror();}
+	IDENT '[' CONSTANT ']' {if($3->value>0) makeSymEntry($1,root,$3->value,type,NULL); else arraydeclerror();}
+	;	
+	
+functiondefs:
+	functiondefs function	{Ldestruct(Lroot);}
+	|
+	function	{Ldestruct(Lroot);}
 	;
+
+function:
+	 functionheader '{' Ldeclarations statementlist  returnstmt '}' {return_type_check($1,$5);$$=node_func($1,$4,$5);execute($$);}
+
+functionheader:
+	vartype IDENT '(' arglist ')' {silc_on_func_header(type,$2,$4); $$=$2;}
+
+returnstmt:
+	RETURN expr {$$=$2;}
+
+mainfunction:
+	INTEGER MAIN '(' ')' '{' Ldeclarations statementlist '}' {$$=node_mainfunc($7);}
+	
+arglist:
+	arg ',' arglist	{ linkArgs($1,$3);}
+	|
+	arg
+	;
+
+arg:
+	vartype IDENT { $$=makeArgNode(type,$2,0);}
+	|
+	vartype '&' IDENT { $$=makeArgNode(type,$3,1);}
+	;
+	
+Ldeclarations:
+	DECL Ldecllist ENDDECL
+	;
+
+Ldecllist:
+	Ldecllist Ldeclaration ';' 
+	|
+	Ldeclaration ';'
+	;
+
+Ldeclaration:
+	vartype Lvarlist
+	;
+Lvarlist:
+	Lvarlist ',' Lvariable
+	|
+	Lvariable
+	;
+	
+Lvariable:
+	IDENT {makeLSymEntry($1,root,type); }
+	;
+
 
 statement:
 	IDENT '=' expr 			{if(isType($3,getVarType($1,root)))			$$=node_assign($3,$1);}
@@ -116,6 +161,10 @@ expr:
 	|
 	IDENT				{ $$ = node_var($1);}
 	|
+	'&' IDENT			{ $$ = node_addressof($2);}
+	|
+	IDENT '(' actualarglist ')'	{check_func_sign($1,$3); $$=node_funccall($1,$3);}
+	|
 	IDENT '[' expr ']'	{ if(isInt($3))	$$ = node_derefArray($1,$3);}
 	|
 	READ '(' ')'		{ $$ = node_read(); }
@@ -142,6 +191,19 @@ expr:
 	|
 	expr LOGOP expr 		{ typeCheckLogop($1,$3);	$$ = node_logOp($1,$3,$2);	}
 	;
+	
+actualarglist:
+		{$$=NULL;}	
+	|
+	nonemptyactualarglist	{$$=$1;}
+	;
+
+nonemptyactualarglist:
+	nonemptyactualarglist ',' expr	{$$=node_actualarglist($1,$3);}
+	|
+	expr	{$$=$1;}
+	;
+
 %%
 
 void yyerror (char *s)
@@ -152,6 +214,7 @@ void yyerror (char *s)
 int main(void)
 {
 	root=construct();
+	Lroot=Lconstruct();
 	yyparse();
 	return 0;
 }
@@ -164,10 +227,4 @@ int execute(node* nptr)
 	return 0;
 }
 
-int arraydeclerror()
-{
-	char buf[50];
-	sprintf(buf,"Error ar line %d \nSize of array should be greater than zero",lineno);			
-	yyerror(buf);
-}
 

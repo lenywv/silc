@@ -34,7 +34,7 @@
 # define YY_YY_Y_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -48,62 +48,66 @@ extern int yydebug;
     CONSTANT = 258,
     IDENT = 259,
     END = 260,
-    INTEGER = 261,
-    BOOLEAN = 262,
-    DECL = 263,
-    ENDDECL = 264,
-    IF = 265,
-    ELSE = 266,
-    PRINT = 267,
-    WHILE = 268,
-    READ = 269,
-    ENDIF = 270,
-    WRITE = 271,
-    TRUE = 272,
-    FALSE = 273,
-    DO = 274,
-    ENDWHILE = 275,
-    LOGOP = 276,
-    RELOP = 277,
-    UMINUS = 278
+    MAIN = 261,
+    INTEGER = 262,
+    BOOLEAN = 263,
+    DECL = 264,
+    ENDDECL = 265,
+    RETURN = 266,
+    IF = 267,
+    ELSE = 268,
+    PRINT = 269,
+    WHILE = 270,
+    READ = 271,
+    ENDIF = 272,
+    WRITE = 273,
+    TRUE = 274,
+    FALSE = 275,
+    DO = 276,
+    ENDWHILE = 277,
+    LOGOP = 278,
+    RELOP = 279,
+    UMINUS = 280
   };
 #endif
 /* Tokens.  */
 #define CONSTANT 258
 #define IDENT 259
 #define END 260
-#define INTEGER 261
-#define BOOLEAN 262
-#define DECL 263
-#define ENDDECL 264
-#define IF 265
-#define ELSE 266
-#define PRINT 267
-#define WHILE 268
-#define READ 269
-#define ENDIF 270
-#define WRITE 271
-#define TRUE 272
-#define FALSE 273
-#define DO 274
-#define ENDWHILE 275
-#define LOGOP 276
-#define RELOP 277
-#define UMINUS 278
+#define MAIN 261
+#define INTEGER 262
+#define BOOLEAN 263
+#define DECL 264
+#define ENDDECL 265
+#define RETURN 266
+#define IF 267
+#define ELSE 268
+#define PRINT 269
+#define WHILE 270
+#define READ 271
+#define ENDIF 272
+#define WRITE 273
+#define TRUE 274
+#define FALSE 275
+#define DO 276
+#define ENDWHILE 277
+#define LOGOP 278
+#define RELOP 279
+#define UMINUS 280
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 16 "silc.y" /* yacc.c:1909  */
+#line 18 "silc.y" /* yacc.c:1909  */
 
 		int i;
 		char *name;
 		struct treenode *nptr;
-//		argnode *aptr;
+		struct argumentnode *aptr;
 
-#line 107 "y.tab.h" /* yacc.c:1909  */
+#line 111 "y.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

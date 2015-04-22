@@ -38,6 +38,9 @@ int lineno=1;
 "integer"	return INTEGER;
 "boolean"	return BOOLEAN;
 "end"		return END;
+"return"	return RETURN;
+"main"	return MAIN;
+
 	/* integers constant*/
 [0-9]+	{ yylval.nptr = node_const(TYPE_INT,atoi(yytext));	return CONSTANT; }
 
@@ -46,7 +49,7 @@ int lineno=1;
 
 
 	/* operators */
-[-()=+*/;,\[\]]	{ return *yytext;}
+[-()=+*/;&,\[\]{}]	{ return *yytext;}
 
 	/* others */
 .	yyerror("Invalid character");

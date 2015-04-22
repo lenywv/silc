@@ -1,0 +1,20 @@
+decl
+	interger a;
+	integer ab();
+enddecl
+
+integer ab()
+{
+	decl
+		interger c;
+	enddecl
+	a=4;
+}
+integer main ( )
+{
+	decl
+		integer b;
+	enddecl
+	
+	a=5;
+}

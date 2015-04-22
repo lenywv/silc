@@ -2,6 +2,8 @@ decl
 integer a,b,c;
 boolean d;
 enddecl
+integer main()
+{
 a=read();
 b=read();
 c=read();
@@ -18,5 +20,5 @@ else
 		write(b);
 	endif;
 endif;
-end
+}
 

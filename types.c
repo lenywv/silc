@@ -45,6 +45,12 @@ int typeCheckArith(node *left,node *right)
 	return typeCheckRelop(left,right);
 }
 
+int typeCheckReturnStmt(int type,node *rtrn)
+{
+	if(rtrn->type!=type)
+		return typeerror2(type,rtrn->type);
+	return 0;
+}
 int typeerror()
 {
 	char buf[30];
@@ -68,3 +74,4 @@ int typeerror3(int typeexp,int type2,int type3)
 	yyerror(buf);
 	exit(1);
 }
+
