@@ -878,7 +878,7 @@ return ENDIF;
 case 17:
 YY_RULE_SETUP
 #line 31 "silc.l"
-return PRINT;
+return WRITE;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP

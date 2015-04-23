@@ -8,19 +8,20 @@ int silc_on_func_header(int type,char *name,argnode *args)
 	symnode *entry=lookup(name,root);
 	if(entry==NULL||entry->args==NULL)
 		function_not_declared_error(name);
-	if(compare_arglist(entry,args))
+	if(compare_arglist(entry->args,args))
 		function_arglist_different(name);
 	while(args!=NULL)
 	{
-		makeLSymEntry(args->name,Lroot,args->type);
+		printf("//entering %s\n",args->name);
+		makeLSymEntry(args->name,Lroot,args->type,1);
+		
 		args=args->next;
 	}
 	return 0;
 }
 int return_type_check(char *name,node* rtrn)
 {
-	Ldestruct(Lroot);
-	return typeCheckReturnStmt(getVarType(name,root),rtrn);
+	return typeCheckReturnStmt(getVarType(name,Lroot),rtrn);
 }
 
 int check_func_sign(char *name,node *args)
@@ -62,15 +63,17 @@ int compare_arglist2(argnode* decl,node *act)
 int function_not_declared_error(char *name)
 {
 	char buf[50];
-	sprintf(buf,"Error ar line %d \nFunction %s was not declared ",lineno,name);
+	sprintf(buf,"Error at line %d \nFunction %s was not declared\n",lineno,name);
 	yyerror(buf);
+	return 0;
 }
 
 int function_arglist_different(char *name)
 {
-	char buf[50];
-	sprintf(buf,"Error ar line %d \nThe argument list of function %s is different from its declaration ",lineno,name);
+	char buf[90];
+	sprintf(buf,"Error at line %d \nThe argument list of function %s is different from its declaration\n",lineno,name);
 	yyerror(buf);
+	return 0;
 }
 int arraydeclerror()
 {

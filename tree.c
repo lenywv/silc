@@ -25,6 +25,11 @@ node* node_mainfunc(node* body)
 	return make_node(CH_MAINFUNC,body,NULL,NULL,NULL,TYPE_VOID,0);
 }
 
+node* node_actualarg(node* expr)
+{
+	return make_node(CH_ACTARG,expr,NULL,NULL,NULL,expr->type,0);
+}
+
 node* node_addressof(char *name)
 {
 	return make_node(CH_ADDR,NULL,NULL,NULL,name,getVarType(name,root),0);

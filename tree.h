@@ -36,5 +36,6 @@ node* node_mainfunc(node* body);
 node* node_addressof(char *name);
 node* node_actualarglist(node *list,node *arg);
 node* node_funccall(char *name,node *actarg);
+node* node_actualarg(node* expr);
 
 #endif

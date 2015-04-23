@@ -1,20 +1,35 @@
 decl
-	interger a;
-	integer ab();
+	integer a;
+	integer sum(integer x,integer y);
+	integer diff(integer x,integer y);
 enddecl
-
-integer ab()
+integer sum(integer x,integer y)
 {
 	decl
-		interger c;
+		integer z;
 	enddecl
-	a=4;
+	z=1;
+	write(x);
+	return x+y-1+z;
+}
+
+integer diff(integer x,integer y)
+{
+	print(x);
+	print(y);
+	return x-y;
 }
 integer main ( )
 {
 	decl
 		integer b;
 	enddecl
-	
+	b=7;
 	a=5;
+	write(a);
+	write(b);
+	write(sum(a,b));
+	print(a);
+	print(b);
+	write(diff(a,b));
 }

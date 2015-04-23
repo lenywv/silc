@@ -56,18 +56,17 @@ extern int yydebug;
     RETURN = 266,
     IF = 267,
     ELSE = 268,
-    PRINT = 269,
-    WHILE = 270,
-    READ = 271,
-    ENDIF = 272,
-    WRITE = 273,
-    TRUE = 274,
-    FALSE = 275,
-    DO = 276,
-    ENDWHILE = 277,
-    LOGOP = 278,
-    RELOP = 279,
-    UMINUS = 280
+    WHILE = 269,
+    READ = 270,
+    ENDIF = 271,
+    WRITE = 272,
+    TRUE = 273,
+    FALSE = 274,
+    DO = 275,
+    ENDWHILE = 276,
+    LOGOP = 277,
+    RELOP = 278,
+    UMINUS = 279
   };
 #endif
 /* Tokens.  */
@@ -82,18 +81,17 @@ extern int yydebug;
 #define RETURN 266
 #define IF 267
 #define ELSE 268
-#define PRINT 269
-#define WHILE 270
-#define READ 271
-#define ENDIF 272
-#define WRITE 273
-#define TRUE 274
-#define FALSE 275
-#define DO 276
-#define ENDWHILE 277
-#define LOGOP 278
-#define RELOP 279
-#define UMINUS 280
+#define WHILE 269
+#define READ 270
+#define ENDIF 271
+#define WRITE 272
+#define TRUE 273
+#define FALSE 274
+#define DO 275
+#define ENDWHILE 276
+#define LOGOP 277
+#define RELOP 278
+#define UMINUS 279
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -107,7 +105,7 @@ union YYSTYPE
 		struct treenode *nptr;
 		struct argumentnode *aptr;
 
-#line 111 "y.tab.h" /* yacc.c:1909  */
+#line 109 "y.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

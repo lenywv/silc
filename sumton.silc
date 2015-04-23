@@ -1,0 +1,30 @@
+decl
+	integer a;
+	integer sumton(integer x);
+enddecl
+integer sumton(integer x)
+{
+	decl
+		integer r;
+	enddecl
+	if(x<0)
+		r=0;
+	else
+		r=x+sumton(x-1);
+	endif;
+	return r;
+}
+
+integer main ( )
+{
+	decl
+		integer b;
+	enddecl
+	b=7;
+	a=5;
+	write(sumton(1));
+	write(sumton(2));
+	write(sumton(3));
+	write(sumton(a));
+	write(sumton(b));
+}

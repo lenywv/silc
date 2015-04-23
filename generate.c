@@ -27,7 +27,7 @@ int getLabel()
 
 int codegen(node *ptr)
 {
-	int op=ptr->op,temp,reg1,reg2,label1,label2;
+	int op=ptr->op,temp,reg1,reg2,reg3,label1,label2;
 	char buf[30];
 	symnode *symentry;
 	switch(op)
@@ -146,13 +146,29 @@ int codegen(node *ptr)
 			freereg(reg1);
 			return 0;
 		case CH_ASSIGN:
-			symentry=lookup(ptr->name,root);
-			reg2=codegen(ptr->right);
+			symentry=lookup(ptr->name,Lroot);
+			reg3=codegen(ptr->right);
 			/*reg1=getreg();
 			printf("MOV R%d, %d\n",reg1,symentry->bind);
 			printf("MOV [R%d], R%d\n",reg1,reg2);*/
-			printf("MOV [%d], R%d\n",symentry->bind,reg2);
-			freereg(reg2);
+			if(symentry==NULL)
+			{
+				symentry=lookup(ptr->name,root);
+				printf("MOV [%d], R%d\n",symentry->bind,reg3);
+			}
+			else
+			{
+				reg1=getreg();
+				reg2=getreg();
+				printf("MOV R%d, %d\n",reg1,symentry->bind);
+				printf("MOV R%d, BP\n",reg2);
+				printf("ADD R%d, R%d\n",reg1,reg2);
+				printf("MOV [R%d], R%d\n",reg1,reg3);
+				freereg(reg2);
+				freereg(reg1);
+			}
+			
+			freereg(reg3);
 			//freereg(reg1);
 			return 0;
 		case CH_ASSIGNARR:
@@ -262,7 +278,7 @@ int codegen(node *ptr)
 			reg2=getreg();
 			printf("PUSH BP\n");
 			printf("MOV BP, SP\n");
-			printf("MOV R%d, %d\n",reg1,Lbind_base);
+			printf("MOV R%d, %d\n",reg1,Lbind_base-1);
 			printf("MOV R%d, BP\n",reg2);
 			printf("ADD R%d, R%d\n",reg1,reg2);
 			printf("MOV SP, R%d\n",reg1);
@@ -271,11 +287,14 @@ int codegen(node *ptr)
 			codegen(ptr->left);
 			reg1=codegen(ptr->right);
 			reg2=getreg();
+			reg3=getreg();
 			printf("MOV R%d, BP\n",reg2);
-			printf("SUB R%d, 2\n",reg2);
+			printf("MOV R%d, -2\n",reg3);
+			printf("ADD R%d, R%d\n",reg2,reg3);
 			printf("MOV [R%d], R%d\n",reg2,reg1);
 			freereg(reg1);
 			freereg(reg2);
+			freereg(reg3);
 			printf("MOV SP, BP\n");
 			printf("POP BP\n");
 			printf("RET\n");
@@ -302,7 +321,7 @@ int generate_code_func_call(char* name, node *actarg)
 	regpost2=getreg();
 	resetreg();
 	while(actarg!=NULL)
-	{
+		{
 		reg1=codegen(actarg->left);
 		printf("PUSH R%d\n",reg1);//pushing the arguments
 		freereg(reg1);

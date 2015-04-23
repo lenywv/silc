@@ -1,52 +1,56 @@
 #include "symbol.h"
-
+extern symnode *root,*Lroot;
 symnode* construct()
 {
 		bind_base=0;
-		symnode *root;
-		root=(symnode *)malloc(sizeof(symnode));
-		root->name="-1";
-		root->type=-1;
-		root->size=-1;
-		root->binding=NULL;
-		root->next=NULL;
-		root->args=NULL;
-		return root;
+		symnode *nroot;
+		nroot=(symnode *)malloc(sizeof(symnode));
+		nroot->name="-1";
+		nroot->type=-1;
+		nroot->size=-1;
+		nroot->binding=NULL;
+		nroot->next=NULL;
+		nroot->args=NULL;
+		return nroot;
 }
 
 symnode* Lconstruct()
 {
 		Lbind_base=1;
 		Lbind_argbase=-3;
-		symnode *Lroot;
-		root=(symnode *)malloc(sizeof(symnode));
-		root->name="-1";
-		root->type=-1;
-		root->size=-1;
-		root->binding=NULL;
-		root->next=NULL;
-		root->args=NULL;
-		return Lroot;
+		symnode *Lnroot;
+		Lnroot=(symnode *)malloc(sizeof(symnode));
+		Lnroot->name="-1";
+		Lnroot->type=-1;
+		Lnroot->size=-1;
+		Lnroot->binding=NULL;
+		Lnroot->next=NULL;
+		Lnroot->args=NULL;
+		return Lnroot;
 }
-symnode* Ldestruct(symnode *Lroot)
+symnode* Ldestruct(symnode *Lroot1)
 {
 	Lbind_base=1;
-	if(Lroot!=NULL)
-		deletenodes(Lroot->next);
+	Lbind_argbase=-3;
+	if(Lroot1!=NULL)
+		deletenodes(Lroot1->next);
+	Lroot1->next=NULL;
 }
 
-deletenodes(symnode *node)
+deletenodes(symnode *snode)
 {
-	if(node!=NULL)
+	if(snode!=NULL)
 	{
-		deletenodes(node->next);
-		free(node);
+		deletenodes(snode->next);
+		free(snode);
 	}
 		
 }
 int getVarType(char *n,symnode *table)
 {
-	symnode *entry=lookup(n,table);
+	symnode *entry=lookup(n,Lroot);
+	if(entry==NULL)
+		entry=lookup(n,root);
 	return entry->type;
 }
 
@@ -119,7 +123,7 @@ symnode* makeLSymEntry(char *n,symnode *table,int t,int isarg)
 			}
 			else
 			{
-				printf("Symbol already exists\n");
+				printf("Symbol %s already exists\n",n);
 				return NULL;
 			}	
 }

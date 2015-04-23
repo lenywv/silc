@@ -37,5 +37,5 @@
 #define CH_MAINFUNC	272
 #define CH_ADDR	273
 #define CH_FUNCCALL	274
-
+#define CH_ACTARG		275
 #endif

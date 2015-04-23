@@ -28,7 +28,7 @@ int lineno=1;
 "if"		return IF;
 "else"	return ELSE;
 "endif"	return ENDIF;
-"print"	return PRINT;
+"print"	return WRITE;
 "read"	return READ;
 "write"	return WRITE;
 "decl"	return DECL;

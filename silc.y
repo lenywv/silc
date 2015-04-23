@@ -24,9 +24,9 @@ symnode *root,*Lroot;
 
 %token CONSTANT IDENT END MAIN
 %token INTEGER BOOLEAN DECL ENDDECL RETURN
-%token IF ELSE PRINT WHILE READ ENDIF WRITE TRUE FALSE DO ENDWHILE
+%token IF ELSE WHILE READ ENDIF WRITE TRUE FALSE DO ENDWHILE
 
-%type <nptr> expr statement statementlist CONSTANT condition functiondefs function mainfunction returnstmt actualarglist nonemptyactualarglist
+%type <nptr> expr statement statementlist CONSTANT condition functiondefs function mainfunction returnstmt actualarglist nonemptyactualarglist actualarg
 %type <aptr> arg arglist
 %type <i> RELOP LOGOP
 %type <name> IDENT functionheader
@@ -38,9 +38,9 @@ symnode *root,*Lroot;
 %%
 
 program:
-	declarations functiondefs mainfunction	{ execute($3); exit(1);}
-	|
-	statementlist  END	{ execute($1); exit(1);}
+	declarations functiondefs mainfunction	{ execute($3);}
+	//|
+	//statementlist  END	{ execute($1); exit(1);}
 	;
 
 declarations:
@@ -80,7 +80,8 @@ variable:
 functiondefs:
 	functiondefs function	{Ldestruct(Lroot);}
 	|
-	function	{Ldestruct(Lroot);}
+	{$$=NULL;}
+	//function	{Ldestruct(Lroot);}
 	;
 
 function:
@@ -90,13 +91,13 @@ functionheader:
 	vartype IDENT '(' arglist ')' {silc_on_func_header(type,$2,$4); $$=$2;}
 
 returnstmt:
-	RETURN expr {$$=$2;}
+	RETURN expr ';' {$$=$2;}
 
 mainfunction:
 	INTEGER MAIN '(' ')' '{' Ldeclarations statementlist '}' {$$=node_mainfunc($7);}
 	
 arglist:
-	arg ',' arglist	{ linkArgs($1,$3);}
+	arglist ',' arg	{ linkArgs($1,$3);}
 	|
 	arg
 	;
@@ -109,6 +110,7 @@ arg:
 	
 Ldeclarations:
 	DECL Ldecllist ENDDECL
+	|
 	;
 
 Ldecllist:
@@ -127,14 +129,14 @@ Lvarlist:
 	;
 	
 Lvariable:
-	IDENT {makeLSymEntry($1,root,type); }
+	IDENT {makeLSymEntry($1,Lroot,type,0); }
 	;
 
 
 statement:
-	IDENT '=' expr 			{if(isType($3,getVarType($1,root)))			$$=node_assign($3,$1);}
+	IDENT '=' expr 			{if(isType($3,getVarType($1,Lroot)))			$$=node_assign($3,$1);}
 	|
-	IDENT '[' expr ']' '=' expr 	{if(isType($6,getVarType($1,root))&&isInt($3))	$$=node_assignArray($3,$6,$1);}
+	IDENT '[' expr ']' '=' expr 	{if(isType($6,getVarType($1,Lroot))&&isInt($3))	$$=node_assignArray($3,$6,$1);}
 	|
 	WRITE '(' expr ')' 		{if(isInt($3))						$$=node_write($3);}
 	|
@@ -199,31 +201,33 @@ actualarglist:
 	;
 
 nonemptyactualarglist:
-	nonemptyactualarglist ',' expr	{$$=node_actualarglist($1,$3);}
+	nonemptyactualarglist ',' actualarg	{$$=node_actualarglist($3,$1);}
 	|
-	expr	{$$=$1;}
+	actualarg	{$$=$1;}
 	;
-
+actualarg:
+	expr {$$=node_actualarg($1);}
+	;
 %%
 
 void yyerror (char *s)
 {
-	fprintf(stderr,"%s\n",s);
+	fprintf(stderr,"%s at line no %d \n",s,lineno);
 }
 
 int main(void)
 {
 	root=construct();
 	Lroot=Lconstruct();
+	initialiseCodeGen();
 	yyparse();
+	completeCodeGen();
 	return 0;
 }
 
 int execute(node* nptr)
 {
-	initialiseCodeGen();
 	codegen(nptr);
-	completeCodeGen();
 	return 0;
 }
 
