@@ -49,9 +49,15 @@ deletenodes(symnode *snode)
 }
 int getVarType(char *n,symnode *table)
 {
+	char buf[50];
 	symnode *entry=lookup(n,Lroot);
 	if(entry==NULL)
 		entry=lookup(n,root);
+	if(entry==NULL)
+	{
+		sprintf(buf,"Variable %s was not declared ",n);
+		yyerror(buf);
+	}
 	return entry->type;
 }
 
@@ -142,5 +148,7 @@ argnode* makeArgNode(int type,char* name,int refer)
 
 int linkArgs(argnode *left,argnode *right)
 {
+	while(left->next!=NULL)
+		left=left->next;
 	left->next=right;
 }

@@ -21,11 +21,11 @@
 #define CH_LT '<'
 #define CH_GT '>'
 #define CH_RELOP 	258
-#define CH_IF		259
+#define CH_IF	259
 #define CH_IFELSE	260
 #define CH_IDENT	261
 #define CH_STMNT	262
-#define CH_READ		263
+#define CH_READ	263
 #define CH_WRITE	264
 #define CH_WHILE	265
 #define CH_IDENTARR	266
@@ -35,7 +35,7 @@
 #define CH_LOGOP	270
 #define CH_FUNC	271
 #define CH_MAINFUNC	272
-#define CH_ADDR	273
+#define CH_ADDR		273
 #define CH_FUNCCALL	274
 #define CH_ACTARG		275
 #endif

@@ -37,6 +37,8 @@ node* node_addressof(char *name)
 
 node* node_actualarglist(node *list,node *arg)
 {
+	while(list->right!=NULL)
+		list=list->right;
 	list->right=arg;
 	return list;
 }

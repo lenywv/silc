@@ -8,8 +8,10 @@ int silc_on_func_header(int type,char *name,argnode *args)
 	symnode *entry=lookup(name,root);
 	if(entry==NULL||entry->args==NULL)
 		function_not_declared_error(name);
+	printf("//arguments ");
 	if(compare_arglist(entry->args,args))
 		function_arglist_different(name);
+	printf("\n");
 	while(args!=NULL)
 	{
 		printf("//entering %s\n",args->name);
@@ -21,6 +23,7 @@ int silc_on_func_header(int type,char *name,argnode *args)
 }
 int return_type_check(char *name,node* rtrn)
 {
+	printf("//function %s return type %s\n",name,getVarType(name,Lroot)==TYPE_INT?"integer":"boolean");
 	return typeCheckReturnStmt(getVarType(name,Lroot),rtrn);
 }
 
@@ -40,6 +43,7 @@ int compare_arglist(argnode* decl,argnode *def)
 		return 1;
 	if(decl==NULL&&def!=NULL)
 		return 1;
+	printf("%s ",decl->name);
 	if(strcmp(decl->name,def->name)!=0||decl->type!=def->type)
 		return 1;
 	return compare_arglist(decl->next,def->next);
@@ -63,7 +67,7 @@ int compare_arglist2(argnode* decl,node *act)
 int function_not_declared_error(char *name)
 {
 	char buf[50];
-	sprintf(buf,"Error at line %d \nFunction %s was not declared\n",lineno,name);
+	sprintf(buf,"Function %s was not declared",name);
 	yyerror(buf);
 	return 0;
 }
@@ -71,13 +75,13 @@ int function_not_declared_error(char *name)
 int function_arglist_different(char *name)
 {
 	char buf[90];
-	sprintf(buf,"Error at line %d \nThe argument list of function %s is different from its declaration\n",lineno,name);
+	sprintf(buf,"The argument list of function %s is different from its declaration",name);
 	yyerror(buf);
 	return 0;
 }
 int arraydeclerror()
 {
 	char buf[50];
-	sprintf(buf,"Error ar line %d \nSize of array should be greater than zero",lineno);			
+	sprintf(buf,"Size of array should be greater than zero");			
 	yyerror(buf);
 }

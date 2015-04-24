@@ -266,6 +266,13 @@ int codegen(node *ptr)
 			printf("main:\n");
 			reg1=getreg();
 			reg2=getreg();
+			//pushing space for global variable
+			printf("MOV R%d, %d\n",reg1,bind_base);
+			printf("MOV R%d, BP\n",reg2);
+			printf("ADD R%d, R%d\n",reg1,reg2);
+			printf("MOV SP, R%d\n",reg1);
+			
+			//pushing space for global variables
 			printf("PUSH BP\n");
 			printf("MOV BP, SP\n");
 			printf("MOV R%d, %d\n",reg1,Lbind_base);

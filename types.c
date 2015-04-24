@@ -54,7 +54,7 @@ int typeCheckReturnStmt(int type,node *rtrn)
 int typeerror()
 {
 	char buf[30];
-	sprintf(buf,"Type error at line %d",lineno);			
+	sprintf(buf,"Type error ");			
 	yyerror(buf);
 	exit(1);
 }
@@ -62,7 +62,7 @@ int typeerror()
 int typeerror2(int typeexp,int type2)
 {
 	char buf[50];
-	sprintf(buf,"Type error at line %d expected type %s found %s",lineno,typeexp==TYPE_INT?"integer":"boolean",type2==TYPE_INT?"integer":"boolean");			
+	sprintf(buf,"Type error, expected type %s found %s",typeexp==TYPE_INT?"integer":"boolean",type2==TYPE_INT?"integer":"boolean");			
 	yyerror(buf);
 	exit(1);
 }
@@ -70,7 +70,7 @@ int typeerror2(int typeexp,int type2)
 int typeerror3(int typeexp,int type2,int type3)
 {
 	char buf[50];
-	sprintf(buf,"Type error at line %d expected type two %ss found %s and %s",lineno,typeexp==TYPE_INT?"integer":"boolean",type2==TYPE_INT?"integer":"boolean",type3==TYPE_INT?"integer":"boolean");			
+	sprintf(buf,"Type error, expected type two %ss found %s and %s",typeexp==TYPE_INT?"integer":"boolean",type2==TYPE_INT?"integer":"boolean",type3==TYPE_INT?"integer":"boolean");			
 	yyerror(buf);
 	exit(1);
 }

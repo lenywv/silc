@@ -1,0 +1,29 @@
+decl
+	integer ref(integer &a);
+enddecl
+
+integer ref(integer &a)
+{
+	decl
+		integer b;
+	enddecl
+	if(a>1)
+		a=a-1;
+		print(a);
+		b=ref(&a);
+		print(a);
+	else
+		b=0;
+	endif;
+	return b;
+}
+
+integer main()
+{
+	decl
+		integer x,y;
+	enddecl
+	x=6;
+	y=ref(&x);
+	print(y);
+}

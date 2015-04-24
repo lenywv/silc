@@ -28,7 +28,7 @@ symnode *root,*Lroot;
 
 %type <nptr> expr statement statementlist CONSTANT condition functiondefs function mainfunction returnstmt actualarglist nonemptyactualarglist actualarg
 %type <aptr> arg arglist
-%type <i> RELOP LOGOP
+%type <i> RELOP LOGOP vartype
 %type <name> IDENT functionheader
 %left LOGOP
 %left RELOP 
@@ -56,13 +56,13 @@ declist:
 declaration:
 	vartype varlist
 	|
-	vartype IDENT '(' arglist ')' {makeSymEntry($2,root,0,type,$4);}
+	vartype IDENT '(' arglist ')' {makeSymEntry($2,root,0,$1,$4);}
 	;
 
 vartype:
-	INTEGER {type=TYPE_INT;}
+	INTEGER {type=TYPE_INT;$$=TYPE_INT;}
 	|
-	BOOLEAN {type=TYPE_BOOL;}
+	BOOLEAN {type=TYPE_BOOL;$$=TYPE_BOOL;}
 	;
 	
 varlist:
@@ -97,9 +97,9 @@ mainfunction:
 	INTEGER MAIN '(' ')' '{' Ldeclarations statementlist '}' {$$=node_mainfunc($7);}
 	
 arglist:
-	arglist ',' arg	{ linkArgs($1,$3);}
+	arglist ',' arg	{ linkArgs($1,$3);$$=$1;}
 	|
-	arg
+	arg {$$=$1;}
 	;
 
 arg:
@@ -134,7 +134,7 @@ Lvariable:
 
 
 statement:
-	IDENT '=' expr 			{if(isType($3,getVarType($1,Lroot)))			$$=node_assign($3,$1);}
+	IDENT '=' expr 			{if(isType($3,getVarType($1,Lroot)))		$$=node_assign($3,$1);}
 	|
 	IDENT '[' expr ']' '=' expr 	{if(isType($6,getVarType($1,Lroot))&&isInt($3))	$$=node_assignArray($3,$6,$1);}
 	|
@@ -159,39 +159,39 @@ condition:
 	;
 	
 expr: 
-	CONSTANT			{ $$ = $1; }
+	CONSTANT				{ $$ = $1; }
 	|
-	IDENT				{ $$ = node_var($1);}
+	IDENT					{ $$ = node_var($1);}
 	|
-	'&' IDENT			{ $$ = node_addressof($2);}
+	'&' IDENT				{ $$ = node_addressof($2);}
 	|
-	IDENT '(' actualarglist ')'	{check_func_sign($1,$3); $$=node_funccall($1,$3);}
+	IDENT '(' actualarglist ')'	{ check_func_sign($1,$3); $$=node_funccall($1,$3);}
 	|
-	IDENT '[' expr ']'	{ if(isInt($3))	$$ = node_derefArray($1,$3);}
+	IDENT '[' expr ']'		{ if(isInt($3))	$$ = node_derefArray($1,$3);}
 	|
-	READ '(' ')'		{ $$ = node_read(); }
+	READ '(' ')'			{ $$ = node_read(); }
 	|
-	expr '+' expr		{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_ADD,$1, $3);}
+	expr '+' expr			{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_ADD,$1, $3);}
 	|
-	expr '-' expr		{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_SUB,$1, $3);}
+	expr '-' expr			{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_SUB,$1, $3);}
 	|
-	expr '*' expr		{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_MUL,$1, $3);}
+	expr '*' expr			{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_MUL,$1, $3);}
 	|
-	expr '/' expr		{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_DIV,$1, $3);}
+	expr '/' expr			{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_DIV,$1, $3);}
 	|
-	expr '%' expr		{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_MOD,$1, $3);}
+	expr '%' expr			{ typeCheckArith($1,$3);	$$ = node_arithmetic(CH_MOD,$1, $3);}
 	|
-	'(' expr ')' 		{ $$ = $2; }
+	'(' expr ')' 			{ $$ = $2; }
 	|
-	'-' expr %prec UMINUS	{ if(isInt($2))	$$ = node_arithmetic(CH_UMINUS, $2,NULL);}
+	'-' expr %prec UMINUS		{ if(isInt($2))	$$ = node_arithmetic(CH_UMINUS, $2,NULL);}
 	|
-	TRUE				{ $$ = node_const(TYPE_BOOL,1);}
+	TRUE					{ $$ = node_const(TYPE_BOOL,1);}
 	|
-	FALSE				{ $$ = node_const(TYPE_BOOL,1);}
+	FALSE					{ $$ = node_const(TYPE_BOOL,1);}
 	|
-	expr RELOP expr 	 	{ typeCheckRelop($1,$3);	$$ = node_relOp($1,$3,$2);	}
+	expr RELOP expr 	 		{ typeCheckRelop($1,$3);	$$ = node_relOp($1,$3,$2);	}
 	|
-	expr LOGOP expr 		{ typeCheckLogop($1,$3);	$$ = node_logOp($1,$3,$2);	}
+	expr LOGOP expr 			{ typeCheckLogop($1,$3);	$$ = node_logOp($1,$3,$2);	}
 	;
 	
 actualarglist:
@@ -212,7 +212,7 @@ actualarg:
 
 void yyerror (char *s)
 {
-	fprintf(stderr,"%s at line no %d \n",s,lineno);
+	fprintf(stderr,"%s, at line no %d \n",s,lineno);
 }
 
 int main(void)
