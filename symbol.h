@@ -16,6 +16,7 @@ typedef struct symbolnode
 {
 	char *name;
 	int type;
+	int atype;
 	int size; 
 	int *binding,bind;
 	struct argumentnode *args;

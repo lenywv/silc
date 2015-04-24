@@ -23,6 +23,7 @@ symnode* Lconstruct()
 		Lnroot->name="-1";
 		Lnroot->type=-1;
 		Lnroot->size=-1;
+		Lnroot->atype=0;
 		Lnroot->binding=NULL;
 		Lnroot->next=NULL;
 		Lnroot->args=NULL;
@@ -94,7 +95,7 @@ symnode* makeSymEntry(char *n,symnode *table,int v,int t,argnode* args)
 			}	
 }
 
-symnode* makeLSymEntry(char *n,symnode *table,int t,int isarg)
+symnode* makeLSymEntry(char *n,symnode *table,int t,int isarg,int atype)
 {
 			symnode *node;
 			node=lookup(n,table);
@@ -108,6 +109,7 @@ symnode* makeLSymEntry(char *n,symnode *table,int t,int isarg)
 				new->next=table->next;
 				table->next=new;
 				new->args=NULL;
+				new->atype=atype;
 				new->binding=NULL;//malloc(sizeof(int)*v);
 				if(isarg)
 				{

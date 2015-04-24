@@ -13,7 +13,7 @@ int silc_on_func_header(int type,char *name,argnode *args)
 	while(args!=NULL)
 	{
 		printf("//entering %s\n",args->name);
-		makeLSymEntry(args->name,Lroot,args->type,1);
+		makeLSymEntry(args->name,Lroot,args->type,1,args->refer);
 		
 		args=args->next;
 	}

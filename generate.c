@@ -81,6 +81,8 @@ int codegen(node *ptr)
 				reg2=getreg();
 				printf("MOV R%d, BP\n",reg2);
 				printf("ADD R%d, R%d\n",reg1,reg2);
+				if(symentry->atype==ATYPEADDR)
+					printf("MOV R%d, [R%d]\n",reg1,reg1);
 				freereg(reg2);
 			}
 			return reg1;
@@ -101,6 +103,8 @@ int codegen(node *ptr)
 				printf("MOV R%d, BP\n",reg2);
 				printf("ADD R%d, R%d\n",reg1,reg2);
 				printf("MOV R%d, [R%d]\n",reg1,reg1);
+				if(symentry->atype==ATYPEADDR)
+					printf("MOV R%d, [R%d]\n",reg1,reg1);
 				freereg(reg2);
 			}
 			return reg1;
@@ -163,6 +167,8 @@ int codegen(node *ptr)
 				printf("MOV R%d, %d\n",reg1,symentry->bind);
 				printf("MOV R%d, BP\n",reg2);
 				printf("ADD R%d, R%d\n",reg1,reg2);
+				if(symentry->atype==ATYPEADDR)
+					printf("MOV R%d, [R%d]\n",reg1,reg1);
 				printf("MOV [R%d], R%d\n",reg1,reg3);
 				freereg(reg2);
 				freereg(reg1);

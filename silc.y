@@ -103,9 +103,9 @@ arglist:
 	;
 
 arg:
-	vartype IDENT { $$=makeArgNode(type,$2,0);}
+	vartype IDENT { $$=makeArgNode(type,$2,ATYPENORM);}
 	|
-	vartype '&' IDENT { $$=makeArgNode(type,$3,1);}
+	vartype '&' IDENT { $$=makeArgNode(type,$3,ATYPEADDR);}
 	;
 	
 Ldeclarations:
@@ -129,7 +129,7 @@ Lvarlist:
 	;
 	
 Lvariable:
-	IDENT {makeLSymEntry($1,Lroot,type,0); }
+	IDENT {makeLSymEntry($1,Lroot,type,0,0); }
 	;
 
 

@@ -2,6 +2,7 @@ decl
 	integer a;
 	integer sum(integer x,integer y);
 	integer diff(integer x,integer y);
+	integer set1(integer &a);
 enddecl
 integer sum(integer x,integer y)
 {
@@ -19,6 +20,11 @@ integer diff(integer x,integer y)
 	print(y);
 	return x-y;
 }
+integer set1(integer &a)
+{
+	a=1;
+	return a;
+}
 integer main ( )
 {
 	decl
@@ -32,4 +38,7 @@ integer main ( )
 	print(a);
 	print(b);
 	write(diff(a,b));
+	b=set1(&a);
+	print(a);
+	print(b);
 }
